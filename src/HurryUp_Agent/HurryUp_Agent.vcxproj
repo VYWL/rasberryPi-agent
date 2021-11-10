@@ -100,11 +100,15 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="CDevice.cpp" />
+    <ClCompile Include="CDevice_tmp.cpp" />
+    <ClCompile Include="CInfo.cpp" />
     <ClCompile Include="CMessage.cpp" />
+    <ClCompile Include="CModule.cpp" />
     <ClCompile Include="CMonitoring.cpp" />
     <ClCompile Include="CTcpClient.cpp" />
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCollector.h" />
@@ -117,6 +121,7 @@
     <ClInclude Include="CTcpClient.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>

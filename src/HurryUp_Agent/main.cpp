@@ -3,6 +3,7 @@
 #include "CMonitoring.h"
 #include "Function.h"
 #include "utils.h"
+#include "CInfo.h"
 
 
 #define BUFFER_SIZE 1024
@@ -10,6 +11,7 @@
 ST_ENV env;
 
 int main(int argc, char *argv[]) {
+	/*
 	if (argc != 4) {
 		printf("syntax : ./agent.out <server ip> <server port> <logger name>\n");
 		printf("sample : ./agent.out 192.168.10.1 5000 logger-test\n");
@@ -19,7 +21,15 @@ int main(int argc, char *argv[]) {
 	env.ip = argv[1];
 	env.port = argv[2];
 	env.loggerName = argv[3];
+	*/
 
+	CInfo* tmp = new CInfo;
+
+	Debug_CInfo(tmp);
+
+	delete tmp;
+
+	/*
 #ifdef DEBUG
 	SetLogger(env.loggerName, core::LOG_INFO | core::LOG_WARN | core::LOG_ERROR | core::LOG_DEBUG);
 	core::Log_Info(TEXT("main.cpp - [%s]"), TEXT("Program is Debug Mode"));
@@ -39,6 +49,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	core::Log_Info(TEXT("main.cpp - [%s]"), TEXT("Terminate Agent Program!"));
-
+	*/
 	return 0;
 }

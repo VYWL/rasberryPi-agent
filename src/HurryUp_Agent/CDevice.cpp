@@ -1,4 +1,5 @@
 #include "CDevice.h"
+#include "utils.h"
 
 
 std::string CDevice::getDeviceName()

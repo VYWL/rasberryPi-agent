@@ -28,5 +28,5 @@ public:
 
 	// Other Functions
 	void checkStatus();
-	// void refreshData(); => 공통 함수
+	void refreshData();
 };

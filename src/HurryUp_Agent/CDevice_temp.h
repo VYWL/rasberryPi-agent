@@ -12,9 +12,14 @@ public:
 	~CDevice(void);
 
 	// Getter
-	uint32_t	getModuleCount(void);
 
-	// Setter;
-	void		addModuleCount(void);
-	void		setModuleCount(uint32_t);
+	uint32_t	 getModuleCount(void);
+
+	// Setter
+	
+	void		 addModuleCount(void);
+	void		 setModuleCount(uint32_t);
+
+	// Other functions
+	void refreshData();
 };
