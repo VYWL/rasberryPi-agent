@@ -21,5 +21,11 @@ public:
 	void		 setModuleCount(uint32_t);
 
 	// Other functions
-	void refreshData();
+
+	void		 collectAllData(void); // Callback 함수 가능성
+	void		 collectNetworkInfo(void);
+	void		 collectOsInfo(void);
+	void		 collectCpuInfo(void);
+	void		 collectServiceInfo(void);
+
 };

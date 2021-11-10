@@ -17,16 +17,20 @@ public:
 	~CModule(void);
 
 	// Getter
-	std::string getCollectedData(void);
-	uint32_t	getPinNum(void);
-	bool		getIsLive(void);
+
+	std::string getCollectedData	(void);
+	uint32_t	getPinNum			(void);
+	bool		getIsLive			(void);
 
 	// Setter
-	void setCollectedData(std::string);
-	void setPinNum(uint32_t);
-	void setStatus(void);
+
+	void setCollectedData	(std::string); // 이어 붙이는 형식
+	void setPinNum			(uint32_t);
+	void setStatus			(bool);
 
 	// Other Functions
-	void checkStatus();
-	void refreshData();
+
+	void checkStatus			(void);
+	void refreshCollectingData	(void); // 지속적으로 파일 갱신. 콜백 가능성
+
 };

@@ -60,7 +60,7 @@ public:
 	std::string				getConnectionInfo	  (void); // 반환 형식 달라질 가능성 존재 (Property 때문에)
 	std::string				getSerialNumber		  (void);
 	std::string				getDeviceInfo		  (int); // case 분류 => string 말고 code면 좋음
-	const ST_DEVICE_INFO_	getDeviceInfo		  (void);
+	ST_DEVICE_INFO_*		getDeviceInfo		  (void);
 
 	// Setter
 	void setName			(std::string);

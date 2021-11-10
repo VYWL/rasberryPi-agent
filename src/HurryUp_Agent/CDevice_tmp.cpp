@@ -18,13 +18,31 @@ void		CDevice::setModuleCount(uint32_t _cnt)	{ this->moduleCount += _cnt; }
 
 // Other functions
 
-void		CDevice::refreshData()
+void		CDevice::collectAllData(void)
 {
-	// 장치의 값을 가져오는 함수이다.
+	this->collectNetworkInfo();
+	this->collectOsInfo();
+	this->collectCpuInfo();
+	this->collectServiceInfo();
+}
 
-	// 일단 이것도 쪼개는게 좋을것 같다
-	// 1. 네트워크 정보
-	// 2. OS 정보
-	// 3. CPU 정보
-	// 4. GPIO 정보
+void		CDevice::collectNetworkInfo(void)
+{
+	// API version
+}
+
+void		CDevice::collectOsInfo(void)
+{
+
+}
+
+
+void		CDevice::collectCpuInfo(void)
+{
+
+}
+
+void		CDevice::collectServiceInfo(void)
+{
+
 }

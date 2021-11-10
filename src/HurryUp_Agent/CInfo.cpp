@@ -5,7 +5,8 @@
 
 // Constructor & destructor
 
-CInfo::CInfo(void) {
+CInfo::CInfo(void) 
+{
 	this->serialNumber				= "1234";
 	this->deviceInfo				= new ST_DEVICE_INFO_;
 	this->deviceInfo->name			= "DName";
@@ -17,8 +18,9 @@ CInfo::CInfo(void) {
 	this->connectMethod				= "connectionMethod";
 };
 
-CInfo::~CInfo(void) {
-	delete(this->deviceInfo);
+CInfo::~CInfo(void) 
+{
+	delete (this->deviceInfo);
 };
 
 // Static functions - none
@@ -28,7 +30,8 @@ CInfo::~CInfo(void) {
 std::string	CInfo::getSerialNumber(void)	{ this->refreshTimeStamp(); return this->serialNumber; }
 std::string	CInfo::getLastModifiedTime(void){ this->refreshTimeStamp(); return this->timestamp; }
 std::string	CInfo::getConnectionInfo(void)	{ this->refreshTimeStamp(); return this->connectMethod; }
-std::string	CInfo::getDeviceInfo(int _property) {
+std::string	CInfo::getDeviceInfo(int _property) 
+{
 	this->refreshTimeStamp();
 
 	switch (_property) {
@@ -39,7 +42,7 @@ std::string	CInfo::getDeviceInfo(int _property) {
 		case D_CATEGORY:	return this->deviceInfo->category;
 	}
 }
-const ST_DEVICE_INFO_  CInfo::getDeviceInfo(void) { this->refreshTimeStamp(); return *this->deviceInfo; }
+ST_DEVICE_INFO_* CInfo::getDeviceInfo(void) { this->refreshTimeStamp(); return this->deviceInfo; }
 
 // Setter
 

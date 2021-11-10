@@ -1,6 +1,7 @@
 #include "utils.h"
 
-std::string getNowUnixTime() {
+std::string getNowUnixTime() 
+{
     std::time_t t = std::time(0);  // t is an integer type
     std::stringstream ss;
     ss << t;
@@ -39,6 +40,19 @@ std::string SendToTerminal(const char* ShellCommand)
 	return RecievedData;
 }
 
+std::string exec(const char* cmd) {
+	std::array<char, 128> buffer;
+	std::string result;
+	std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+	if (!pipe) {
+		throw std::runtime_error("popen() failed!");
+	}
+	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+		result += buffer.data();
+	}
+	return result;
+}
+
 void SetLogger(std::string name, DWORD inputOption)
 {
 	std::tstring strModuleFile = core::GetFileName();
@@ -59,7 +73,8 @@ void SetLogger(std::string name, DWORD inputOption)
 
 // Debug
 
-void Debug_CInfo(CInfo* tmp) {
+void Debug_CInfo(CInfo* tmp) 
+{
 
 	std::cout << ":: CInfo Create Test ::" << '\n';
 	std::cout << ":: serialNum = " << tmp->getSerialNumber() << '\n';
@@ -72,4 +87,46 @@ void Debug_CInfo(CInfo* tmp) {
 	std::cout << ":: deviceInfo->category = " << tmp_dinfo.category << '\n';
 	std::cout << ":: timestamp = " << tmp->getLastModifiedTime() << '\n';
 	std::cout << ":: connectionInfo = " << tmp->getConnectionInfo() << '\n';
+}
+
+// 1. API 이용 => UNIX TimeSharing 서비스 이용
+void osInfoGather_1()
+{
+	struct utsname buf;
+
+	if (uname(&buf) == -1)
+	{
+		printf("uname Error! \n");
+		exit(1);
+	}
+
+	std::cout << "domainName : " << buf.domainname << '\n';
+	std::cout << "machine : " << buf.machine << '\n';
+	std::cout << "nodename : " << buf.nodename << '\n';
+	std::cout << "release : " << buf.release << '\n';
+	std::cout << "sysname : " << buf.sysname << '\n';
+	std::cout << "version : " << buf.version << '\n';
+}
+
+// 2. 명령어로 조회하는 경우이다.
+void osInfoGather_2()
+{
+	std::string temp = exec("lsb_release -a");
+	std::cout << temp << '\n';
+}
+
+// 3. 설정 파일에 접근하는 경우이다
+void osInfoGather_3()
+{
+	std::string temp = exec("cat /etc/os-release ");
+	std::cout << temp << '\n';
+
+	temp = exec("cat /proc/version");
+	std::cout << temp << '\n';
+}
+
+// 1. API
+void networkInfoGather_1()
+{
+
 }
