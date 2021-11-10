@@ -1,12 +1,24 @@
 #pragma once
 #include "stdafx.h"
+#include "CPolicy.h"
+#include "CInspection.h"
 
 class CExecutor
 {
 private:
-	// 멤버변수
+	
+	CPolicy* policy;
+	CInspection* inspection;
 
 public:
-	// 멤버함수 및 로직
+	
+	CExecutor(void);
+	~CExecutor(void);
+
+	void refreshPolicyList();
+	std::string getActivatedPoliciesInfo();
+
+	void clearPolicyList();
+	void clearInspectionQueue();
 
 };

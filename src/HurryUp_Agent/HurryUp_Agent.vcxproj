@@ -99,12 +99,16 @@
     <RemoteOutRelDir>$(RemoteProjectRelDir)/Build/$(configuration)$(platform)</RemoteOutRelDir>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="CCollector.cpp" />
     <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="CDevice_tmp.cpp" />
+    <ClCompile Include="CExecutor.cpp" />
     <ClCompile Include="CInfo.cpp" />
+    <ClCompile Include="CInspection.cpp" />
     <ClCompile Include="CMessage.cpp" />
     <ClCompile Include="CModule.cpp" />
     <ClCompile Include="CMonitoring.cpp" />
+    <ClCompile Include="CPolicy.cpp" />
     <ClCompile Include="CTcpClient.cpp" />
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="main.cpp" />
@@ -114,10 +118,13 @@
     <ClInclude Include="CCollector.h" />
     <ClInclude Include="CDevice.h" />
     <ClInclude Include="CDevice_temp.h" />
+    <ClInclude Include="CExecutor.h" />
     <ClInclude Include="CInfo.h" />
+    <ClInclude Include="CInspection.h" />
     <ClInclude Include="CMessage.h" />
     <ClInclude Include="CModule.h" />
     <ClInclude Include="CMonitoring.h" />
+    <ClInclude Include="CPolicy.h" />
     <ClInclude Include="CTcpClient.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="stdafx.h" />
