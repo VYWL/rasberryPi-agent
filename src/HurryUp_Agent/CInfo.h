@@ -1,6 +1,15 @@
 #pragma once
 #include "stdafx.h"
 
+enum propertyIdx {
+	D_NAME,
+	D_OSNAME,
+	D_MODELNUM,
+	D_LOCATION,
+	D_CATEGORY
+};
+
+// modelNumber는 번호 용례가 나온다면 자료형 변경
 struct ST_DEVICE_INFO
 {
 	std::string name;
@@ -8,6 +17,16 @@ struct ST_DEVICE_INFO
 	std::string modelNumber;
 	std::string location;
 	std::string category;
+
+	ST_DEVICE_INFO& operator= (const ST_DEVICE_INFO& t) {
+		this->name			= t.name;
+		this->osName		= t.osName;
+		this->location		= t.location;
+		this->modelNumber	= t.modelNumber;
+		this->category		= t.category;
+
+		return *this;
+	}
 };
 
 
@@ -18,7 +37,7 @@ private:
 	std::string serialNumber;
 
 	// Device Information
-	ST_DEVICE_INFO deviceInfo;
+	ST_DEVICE_INFO* deviceInfo;
 
 	// Meta Information
 	std::string timestamp;
@@ -34,21 +53,23 @@ public:
 	~CInfo	(void);
 
 	// Getter
-	std::string				getSerialNumber		(void);
-	const ST_DEVICE_INFO	getDeviceInfo		(void);
-	std::string				getDeviceInfo		(std::string); // case 분류 => string 말고 code면 좋음
 	std::string				getLastModifiedTime	(void);
-	std::string				getConnectionInfo	(void);
+	std::string				getConnectionInfo	(void); // 반환 형식 달라질 가능성 존재 (Property 때문에)
+	std::string				getSerialNumber		(void);
+	std::string				getDeviceInfo		(int); // case 분류 => string 말고 code면 좋음
+	const ST_DEVICE_INFO	getDeviceInfo		(void);
 
 	// Setter
-	void setName		(std::string);
-	void setOsName		(std::string);
-	void setModelNumber	(std::string);
-	void setLocation	(std::string);
-	void setCategory	(std::string);
-	void setDeviceInfo	(ST_DEVICE_INFO);
+	void setName		 (std::string);
+	void setOsName		 (std::string);
+	void setModelNumber	 (std::string);
+	void setSerialNumber (std::string);
+	void setLocation	 (std::string);
+	void setCategory	 (std::string);
+	void setDeviceInfo	 (ST_DEVICE_INFO&);
 
 	// Other Functions
-	void refreshTimeStamp	();
+	void refreshTimeStamp	(void);
+	void refreshData		(void);
 
 };

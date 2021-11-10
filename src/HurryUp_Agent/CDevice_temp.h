@@ -5,7 +5,7 @@ class CDevice : public CInfo
 {
 private:
 
-	uint32_t moduleCount;
+	uint32_t moduleCount = 0;
 
 public:
 	CDevice(void);
@@ -17,7 +17,4 @@ public:
 	// Setter;
 	void		addModuleCount(void);
 	void		setModuleCount(uint32_t);
-
-	// Other Functions
-	// void refreshData(); => 공통 함수
 };

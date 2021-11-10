@@ -107,8 +107,12 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CCollector.h" />
     <ClInclude Include="CDevice.h" />
+    <ClInclude Include="CDevice_temp.h" />
+    <ClInclude Include="CInfo.h" />
     <ClInclude Include="CMessage.h" />
+    <ClInclude Include="CModule.h" />
     <ClInclude Include="CMonitoring.h" />
     <ClInclude Include="CTcpClient.h" />
     <ClInclude Include="Function.h" />

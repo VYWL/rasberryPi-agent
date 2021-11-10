@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include "utils.h"
 
 #define BUFFER_SIZE 4096
 

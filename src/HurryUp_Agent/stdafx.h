@@ -6,6 +6,7 @@
 #include <string>
 #include <string.h>
 #include <mutex>
+#include <ctime>
 
 struct ST_ENV
 {
@@ -48,5 +49,3 @@ std::string StringFormatter(const std::string& format, Args ... args) {
 #include <algorithm>
 #include <sys/types.h>
 #include <dirent.h>
-
-std::string SendToTerminal(const char* ShellCommand);
