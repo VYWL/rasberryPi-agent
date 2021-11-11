@@ -1,6 +1,7 @@
 #pragma once
 #include "CDevice_temp.h"
 #include "CModule.h"
+#include "CMonitoring.h"
 #include "stdafx.h"
 
 class CCollector
@@ -9,6 +10,7 @@ private:
 
 	CDevice* device;
 	std::vector<CModule*> moduleList;
+	CMonitoring* monitor;
 	
 public:
 	// Constructor
@@ -18,9 +20,10 @@ public:
 
 	// Getter
 
-	CDevice*		getDeviceInstance	(void);
-	CModule*		getModuleInstance	(int);
-	std::string		getModuleListInfo	(void);
+	CDevice*		getDeviceInstance		(void);
+	CModule*		getModuleInstance		(int);
+	CMonitoring*	getMonitoringInstance	(void);
+	std::string		getModuleListInfo		(void);
 
 	// Setter
 
@@ -32,4 +35,7 @@ public:
 	void refreshDeviceInfo	(void);
 	void refreshModuleList	(void);
 	void refreshModuleInfo	(int);
+
+	// API > CCollector <=> CMessage
+
 };

@@ -28,7 +28,6 @@ std::string trim(const std::string&);
 
 
 // TEST
-void Debug_CInfo(CInfo *);
 
 void osInfoGather_1();
 void osInfoGather_2();

@@ -52,7 +52,7 @@ CModule CCollector::deleteModule(int)
 	// 제거 후 지운 객체 정보를 반환한다. (미리 복사해 두어야 겠지?)
 }
 
-// Other functions
+// Monitoring?
 
 void CCollector::refreshDeviceInfo(void)
 {
