@@ -32,7 +32,6 @@ public:
 	std::string	getLastModifiedTime	  (void);
 	std::string	getSerialNumber		  (void);
 
-	std::string	getMetaInfo	(int); // case 분류 => string 말고 code면 좋음
 	ST_INFO*	getMetaInfo	(void);
 
 	// Setter

@@ -102,22 +102,6 @@ void SetLogger(std::string name, DWORD inputOption)
 
 // Debug
 
-void Debug_CInfo(CInfo* tmp) 
-{
-
-	std::cout << ":: CInfo Create Test ::" << '\n';
-	std::cout << ":: serialNum = " << tmp->getSerialNumber() << '\n';
-
-	ST_DEVICE_INFO_* tmp_dinfo = tmp->getDeviceInfo();
-	std::cout << ":: deviceInfo->name = " << tmp_dinfo->name << '\n';
-	std::cout << ":: deviceInfo->osName = " << tmp_dinfo->osName << '\n';
-	std::cout << ":: deviceInfo->modelNumber = " << tmp_dinfo->modelNumber << '\n';
-	std::cout << ":: deviceInfo->location = " << tmp_dinfo->location << '\n';
-	std::cout << ":: deviceInfo->category = " << tmp_dinfo->category << '\n';
-	std::cout << ":: timestamp = " << tmp->getLastModifiedTime() << '\n';
-	std::cout << ":: connectionInfo = " << tmp->getConnectionInfo() << '\n';
-}
-
 // 1. API 이용 => UNIX TimeSharing 서비스 이용
 void osInfoGather_1()
 {

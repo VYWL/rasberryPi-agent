@@ -3,7 +3,7 @@
 
 // modelNumber는 번호 용례가 나온다면 자료형 변경
 // 기존 ST_DEVICE_INFO가 사라지면 아래 구조체명 변경
-// metaInfo에 더 넣기
+// metaInfo에 더 넣기 => 11/12 더 반영
 struct ST_DEVICE_INFO_
 {
 	std::string name;
@@ -43,25 +43,27 @@ public:
 
 	// Getter
 
-	std::string		 getMetaInfo(int);  // case 분류 => string 말고 code면 좋음
 	ST_DEVICE_INFO_* getMetaInfo(void); // 전체 구조체 반환
 
-	std::string		 getConnectionInfo(void); // 반환 형식 달라질 가능성 존재 (Property 때문에)
-	std::string		 getSerialNumber(void);
+	// TODO :: 구조체 확정되면 추후 추가
+	std::string getName(std::string); 
+	std::string getOsName(std::string);
+	std::string getModelNumber(std::string);
+	std::string getLocation(std::string);
+	std::string getCategory(std::string);
+	std::string	getConnectionInfo(void); // 반환 형식 달라질 가능성 존재 (Property 때문에)
 
 	// Setter
 	
 	void addModuleCount(void);
 	void setModuleCount(uint32_t);
-	
+
+	// TODO :: 구조체 확정되면 추후 추가
 	void setName			(std::string);
 	void setOsName			(std::string);
 	void setModelNumber		(std::string);
-	void setSerialNumber	(std::string);
 	void setLocation		(std::string);
 	void setCategory		(std::string);
-
-	void setMetaInfo		(int);
 	void setMetaInfo		(ST_DEVICE_INFO_&);
 
 	// Other functions
@@ -71,6 +73,5 @@ public:
 	void collectOsInfo(void);
 	void collectCpuInfo(void);
 	void collectServiceInfo(void);
-	void collectProcessInfo(void);
 
 };
