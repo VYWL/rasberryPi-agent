@@ -101,7 +101,7 @@
   <ItemGroup>
     <ClCompile Include="CCollector.cpp" />
     <ClCompile Include="CDevice.cpp" />
-    <ClCompile Include="CDevice_tmp.cpp" />
+    <ClCompile Include="CDevice_temp.cpp" />
     <ClCompile Include="CExecutor.cpp" />
     <ClCompile Include="CInfo.cpp" />
     <ClCompile Include="CInspection.cpp" />

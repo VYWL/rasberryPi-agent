@@ -9,7 +9,7 @@ struct ST_STAGE_INFO
 	uint32_t nowStage;
 	std::string stageDescription;
 	std::string timestamp;
-	uint32_t isSuccess;
+	uint32_t isFail;
 };
 
 struct ST_INSPECTION_INFO
@@ -27,7 +27,7 @@ struct ST_INSPECTION_INFO
 class CInspection
 {
 private:
-	// TODO :: queue가 Thread safe 한지 알아봐야한다.
+	// TODO :: queue가 Thread safe 한지 알아봐야한다. 아니라고 한다....
 	std::queue<ST_INSPECTION_INFO*> taskQueue;
 
 public:

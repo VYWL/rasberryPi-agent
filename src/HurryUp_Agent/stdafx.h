@@ -38,10 +38,12 @@ std::string StringFormatter(const std::string& format, Args ... args) {
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <regex>
 
 #include <pcap.h>
 #include <errno.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
@@ -51,6 +53,10 @@ std::string StringFormatter(const std::string& format, Args ... args) {
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <dirent.h>
+#include <sys/types.h> // for opendir(), readdir(), closedir()
+#include <sys/stat.h> // for stat()
 
 #include <cstdlib>
+#include <cstring>
+#include <cstdarg>
 

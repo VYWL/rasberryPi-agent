@@ -6,6 +6,7 @@
 class CCollector
 {
 private:
+
 	CDevice* device;
 	std::vector<CModule*> moduleList;
 	

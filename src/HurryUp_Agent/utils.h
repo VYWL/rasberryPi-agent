@@ -2,7 +2,30 @@
 #include "stdafx.h"
 #include "CInfo.h"
 
-std::string getNowUnixTime();
+// Struct 
+
+
+// NetInfo => ifaddr (1¹ø ¹æ½Ä)
+#include <ifaddrs.h>
+#include <linux/if_link.h>      
+
+struct sockaddr_ll
+{
+    uint16_t sll_family;
+    uint16_t sll_protocol;
+    uint32_t sll_ifindex;
+    uint16_t sll_hatype;
+    uint8_t sll_pkttype;
+    uint8_t sll_halen;
+    uint8_t sll_addr[8];
+};
+
+
+// About String
+std::string getNowUnixTime(void);
+std::vector<std::string> split(std::string, char);
+std::string trim(const std::string&);
+
 
 // TEST
 void Debug_CInfo(CInfo *);
@@ -15,7 +38,8 @@ void networkInfoGather_1();
 void networkInfoGather_2();
 void networkInfoGather_3();
 
-void procInfoGather_1();
+void serviceInfoGather_1();
+void serviceInfoGather_2();
 
 // Log or Terminal
 std::string SendToTerminal(const char *);
