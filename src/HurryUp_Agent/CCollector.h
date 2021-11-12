@@ -8,7 +8,7 @@ class CCollector
 {
 private:
 
-	CDevice* device;
+	CDevice_* device;
 	std::vector<CModule*> moduleList;
 	CMonitoring* monitor;
 	
@@ -20,7 +20,7 @@ public:
 
 	// Getter
 
-	CDevice*		getDeviceInstance		(void);
+	CDevice_*		getDeviceInstance		(void);
 	CModule*		getModuleInstance		(int);
 	CMonitoring*	getMonitoringInstance	(void);
 	std::string		getModuleListInfo		(void);

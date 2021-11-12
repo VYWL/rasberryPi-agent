@@ -1,15 +1,9 @@
 #include "CCollector.h"
 
-// Global Variables - none
-
-// Static functions - none
-
-// Constructor & destructor
-
 CCollector::CCollector(void)
 {
 	// TODO :: 디바이스 이름 및 시리얼 넘버 등의 정보는 수집이 되는게 아님 => 설정필요.
-	this->device = new CDevice;
+	this->device = new CDevice_;
 	this->device->collectAllData();
 }
 
@@ -20,9 +14,10 @@ CCollector::~CCollector(void)
 
 // Getter
 
-CDevice*		CCollector::getDeviceInstance(void)
+CDevice_*		CCollector::getDeviceInstance(void)
 {
 	// 가지고있는 this->Device를 리턴한다.
+	return this->device;
 }
 
 CModule*		CCollector::getModuleInstance(int _idx)
@@ -50,6 +45,8 @@ CModule CCollector::deleteModule(int)
 {
 	// 모듈 리스트의 특정 인덱스의 모듈 객체를 메모리 해제하고 리스트에서 제거한다.
 	// 제거 후 지운 객체 정보를 반환한다. (미리 복사해 두어야 겠지?)
+	auto a = new CModule;
+	return *a;
 }
 
 // Monitoring?

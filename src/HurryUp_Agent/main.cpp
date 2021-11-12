@@ -3,7 +3,7 @@
 #include "CMonitoring.h"
 #include "Function.h"
 #include "utils.h"
-#include "CInfo.h"
+#include "CCollector.h"
 
 
 #define BUFFER_SIZE 1024
@@ -26,6 +26,10 @@ int main(int argc, char *argv[]) {
 	// std::cout << ":: Method 1 ::" << "\n";
 	// serviceInfoGather_1();
 
+	// :: CCollector Initializing test ::
+	// CCollector* tmp = new CCollector;
+	// Debug_CDevice(tmp->getDeviceInstance());
+	
 
 
 	return 0;

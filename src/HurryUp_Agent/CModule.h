@@ -18,7 +18,6 @@ struct ST_MODULE_INFO_
 	}
 };
 
-
 class CModule : public CInfo<ST_MODULE_INFO_>
 {
 private:
@@ -28,25 +27,39 @@ private:
 
 public:
 
-	CModule(void);
-	~CModule(void);
+	CModule(void)
+	{
+		this->metaInfo					= new ST_MODULE_INFO_;
+		this->metaInfo->pinNum			= 0;
+		this->metaInfo->isLive			= false;
+		this->metaInfo->connectionType	= 0;
+	}
+
+	~CModule(void)
+	{
+		delete (this->metaInfo);
+	}
 
 	// Getter
 
-	uint32_t		 getPinNum			(void);
-	bool			 getIsLive			(void);
-	uint32_t		 getConnectionType	(void);
-	ST_MODULE_INFO_* getMetaInfo		(void); // 전체 구조체 반환
+	uint32_t		 getPinNum(void)			{ return this->metaInfo->pinNum; }
+	bool			 getIsLive(void)			{ return this->metaInfo->isLive; }
+	uint32_t		 getConnectionType(void)	{ return this->metaInfo->connectionType; }
+	ST_MODULE_INFO_* getMetaInfo(void)			{ return this->metaInfo; } // 전체 구조체 반환
 
 	// Setter
 
-	void setStatus			(bool);
-	void setPinNum			(uint32_t);
-	void setConnectionType	(uint32_t);
-	void setMetaInfo		(ST_MODULE_INFO_&);
+	void setStatus(bool _status)				{ this->metaInfo->isLive			= _status; }
+	void setPinNum(uint32_t _pinNum)			{ this->metaInfo->pinNum			= _pinNum; }
+	void setConnectionType(uint32_t _cType)		{ this->metaInfo->connectionType	= _cType; }
+	void setMetaInfo(ST_MODULE_INFO_& _m)		{ *this->metaInfo					= _m; }
 
 	// Other Functions
 
-	void checkStatus	(void);
-
+	void checkStatus(void)
+	{
+		// PinNum이 유효한지를 알아내는 함수
+	}
 };
+
+void Debug_CModule(CModule*);

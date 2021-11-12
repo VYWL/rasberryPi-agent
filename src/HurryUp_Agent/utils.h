@@ -1,10 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "CInfo.h"
-
-// Struct 
-
-
 // NetInfo => ifaddr (1¹ø ¹æ½Ä)
 #include <ifaddrs.h>
 #include <linux/if_link.h>      
