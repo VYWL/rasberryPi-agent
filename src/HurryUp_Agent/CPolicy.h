@@ -24,7 +24,8 @@ class CPolicy
 {
 
 private:
-
+	
+	std::string timestamp;
 	std::vector<ST_POLICY_INFO_*> activePolicyList;
 
 public:
@@ -32,18 +33,17 @@ public:
 	CPolicy(void);
 	~CPolicy(void);
 
-	void addPolicy(const ST_POLICY_INFO_*);
+	void addPolicy(ST_POLICY_INFO_*);
 	ST_POLICY_INFO_* findPolicy(int);
 	ST_POLICY_INFO_* findPolicy(std::string);
-	ST_POLICY_INFO_	deletePolicy(int);
-	ST_POLICY_INFO_	deletePolicy(std::string);
+	void			deletePolicy(int);
+	void			deletePolicy(std::string);
 
-	std::string		getPolicyList(void);
-	void			initPolicyList(void);
+	std::vector<ST_POLICY_INFO_*>	getPolicyList(void);
+	void							initPolicyList(void);
 
 	// TODO :: 파일 혹은 명령어를 받고 정책을 적용 및 해제하는 함수
-	void enablePolicy(void);
-	void disablePolicy(void);
+	static void applyPolicyState(int _code, std::string _data);
 
-	void refreshTimeStamp(void);
+	void refreshTimestamp(void);
 };

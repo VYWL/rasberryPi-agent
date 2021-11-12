@@ -7,16 +7,16 @@ class CExecutor
 {
 private:
 	
-	CPolicy* policy;
-	CInspection* inspection;
+	CPolicy*		policy;
+	CInspection*	inspection;
 
 public:
 	
 	CExecutor(void);
 	~CExecutor(void);
 
-	void refreshPolicyList();
-	std::string getActivatedPoliciesInfo();
+	std::vector<ST_POLICY_INFO_*>	getPolicyListInfo(void);
+	int								getNowTaskQueueLength(void);
 
 	void clearPolicyList();
 	void clearInspectionQueue();
