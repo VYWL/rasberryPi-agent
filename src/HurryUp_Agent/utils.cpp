@@ -127,8 +127,11 @@ void osInfoGather_1()
 // 2. 명령어로 조회하는 경우이다.
 void osInfoGather_2()
 {
-	std::string temp = exec("lsb_release -a");
-	std::cout << temp << '\n';
+	std::string os_raw = exec("lsb_release -a | grep Description");
+	std::string os = trim(split(os_raw, ':')[1]);
+
+	std::cout << "\n\n\n\n\n";
+	std::cout << os << '\n';
 }
 
 // 3. 설정 파일에 접근하는 경우이다
@@ -164,12 +167,15 @@ void networkInfoGather_1()
 		/* Display interface name and family (including symbolic
 		   form of the latter for the common families). */
 
-		printf("%-8s %s (%d)\n",
+		std::string temp = ifa->ifa_name;
+		std::cout << " IFNM :: " << temp << '\n';
+
+		/*printf("%-8s %s (%d)\n",
 			ifa->ifa_name,
 			(family == AF_PACKET) ? "AF_PACKET" :
 			(family == AF_INET) ? "AF_INET" :
 			(family == AF_INET6) ? "AF_INET6" : "???",
-			family);
+			family);*/
 
 		/* For an AF_INET* interface address, display the address. */
 
@@ -184,25 +190,38 @@ void networkInfoGather_1()
 				exit(EXIT_FAILURE);
 			}
 
-			printf("\t\taddress: <%s>\n", host);
+			std::string hostTemp = host;
+			if (family == AF_INET ) std::cout << " IPv4 :: ";
+			if (family == AF_INET6) std::cout << " IPv6 :: ";
+			std::cout << hostTemp << '\n';
+
+			//printf("\t\taddress: <%s>\n", host);
 
 		}
 		else if (family == AF_PACKET && ifa->ifa_data != NULL) {
 			struct rtnl_link_stats* stats = (rtnl_link_stats*)ifa->ifa_data;
 
 			auto s = (sockaddr_ll*)ifa->ifa_addr;
+			char mac[] = "00:13:a9:1f:b0:88";
 
-			printf("%-8s ", ifa->ifa_name);
+			auto a = s->sll_addr;
+
+			sscanf(mac, "%02x:%02x:%02x:%02x:%02x:%02x", &a[0], &a[1], &a[2], &a[3], &a[4], &a[5]);
+
+			std::string macAddr = mac;
+			std::cout << " MAC :: " << macAddr << '\n';
+
+			/*printf("%-8s ", ifa->ifa_name);
 			for (int i = 0; i < s->sll_halen; i++)
 			{
 				printf("%02x%c", (s->sll_addr[i]), (i + 1 != s->sll_halen) ? ':' : '\n');
-			}
+			}*/
 
 			// Packet => 안쓸듯
-			printf("\t\ttx_packets = %10u; rx_packets = %10u\n"
+			/*printf("\t\ttx_packets = %10u; rx_packets = %10u\n"
 				"\t\ttx_bytes   = %10u; rx_bytes   = %10u\n",
 				stats->tx_packets, stats->rx_packets,
-				stats->tx_bytes, stats->rx_bytes);
+				stats->tx_bytes, stats->rx_bytes);*/
 		}
 	}
 

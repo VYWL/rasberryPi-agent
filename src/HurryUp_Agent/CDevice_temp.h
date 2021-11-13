@@ -1,7 +1,6 @@
 #pragma once
 #include "CInfo.h"
 
-
 struct ST_NETWORK_INTERFACE_INFO
 {
 	std::string if_name;
@@ -191,7 +190,8 @@ public:
 	void collectModelName(void)
 	{
 		std::string modelName_raw = exec("cat /proc/cpuinfo | grep Model");
-		std::string modelName = trim(split(modelName_raw, ':')[1]);
+		std::string modelName = modelName_raw != "" ? trim(split(modelName_raw, ':')[1]) : "";
+
 
 		this->setModelNumber(modelName);
 	}
@@ -199,7 +199,7 @@ public:
 	void collectSerialNumber(void)
 	{
 		std::string serialNum_raw = exec("cat /proc/cpuinfo | grep Serial");
-		std::string serialNum = trim(split(serialNum_raw, ':')[1]);
+		std::string serialNum = serialNum_raw != "" ? trim(split(serialNum_raw, ':')[1]) : "";
 
 		this->setSerialNumber(serialNum);
 	}
@@ -210,7 +210,89 @@ public:
 		// Command version => ifconfig, ip addr 관련 => 기존 함수 사용
 		// File version	 => /sys/class/net 사용
 
-		// ifname, mac, ipv4, ipv6
+		std::vector < ST_NETWORK_INTERFACE_INFO > result;
+
+		// ifaddr 사용
+		struct ifaddrs* ifaddr;
+		int family, s;
+		char host[NI_MAXHOST];
+
+		// 에러 핸들링
+		if (getifaddrs(&ifaddr) == -1) {
+			perror("getifaddrs");
+			exit(EXIT_FAILURE);
+		}
+
+		std::map<std::string, ST_NETWORK_INTERFACE_INFO*> checker;
+		// 링크드 리스트 형식으로 되어있음. 하위 내용은 일단 출력 형식으로 구현.
+		for (struct ifaddrs* ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
+			if (ifa->ifa_addr == NULL)
+				continue;
+
+			std::string temp = ifa->ifa_name;
+
+			if (checker.find(temp) == checker.end())
+			{
+				auto nInfo = new ST_NETWORK_INTERFACE_INFO;
+				nInfo->if_name = temp;
+
+				checker[temp] = nInfo;
+			}
+			
+			auto nowNetInfo = checker[temp];
+
+
+			family = ifa->ifa_addr->sa_family;
+
+
+			if (family == AF_INET || family == AF_INET6) {
+				s = getnameinfo(ifa->ifa_addr,
+					(family == AF_INET) ? sizeof(struct sockaddr_in) :
+					sizeof(struct sockaddr_in6),
+					host, NI_MAXHOST,
+					NULL, 0, NI_NUMERICHOST);
+
+				if (s != 0) {
+					printf("getnameinfo() failed: %s\n", gai_strerror(s));
+					exit(EXIT_FAILURE);
+				}
+
+				std::string hostTemp = host;
+				if (family == AF_INET)	nowNetInfo->inet_addr  = hostTemp;
+				if (family == AF_INET6) nowNetInfo->inet6_addr = hostTemp;
+
+				//printf("\t\taddress: <%s>\n", host);
+
+			}
+			else if (family == AF_PACKET && ifa->ifa_data != NULL) {
+				struct rtnl_link_stats* stats = (rtnl_link_stats*)ifa->ifa_data;
+
+				auto s = (sockaddr_ll*)ifa->ifa_addr;
+				char mac[] = "00:13:a9:1f:b0:88";
+
+				auto a = s->sll_addr;
+
+				sscanf(mac, "%02x:%02x:%02x:%02x:%02x:%02x", &a[0], &a[1], &a[2], &a[3], &a[4], &a[5]);
+
+				std::string macAddr = mac;
+				nowNetInfo->m_addr = macAddr;
+
+			}
+		}
+
+		freeifaddrs(ifaddr);
+
+		for (auto it : checker)
+		{
+			ST_NETWORK_INTERFACE_INFO temp;
+			temp.if_name	= it.second->if_name;
+			temp.m_addr		= it.second->m_addr;
+			temp.inet_addr	= it.second->inet_addr;
+			temp.inet6_addr	= it.second->inet6_addr;
+
+			this->metaInfo->networkInfo.push_back(temp);
+		}
+
 	}
 
 	void collectOsInfo(void)
@@ -220,6 +302,26 @@ public:
 		// File version => cat /etc/os-release 혹은 cat /proc/version
 
 		// osName, release가 포함됨.
+
+		ST_OS_INFO _osInfo;
+
+		struct utsname buf;
+
+		if (uname(&buf) == -1)
+		{
+			printf("uname Error! \n");
+			exit(1);
+		}
+
+		std::string os_raw = exec("lsb_release -a | grep Description");
+		std::string os = trim(split(os_raw, ':')[1]);
+		std::string release = buf.release;
+
+		_osInfo.osName		= os;
+		_osInfo.osRelease	= release;
+
+		this->metaInfo->osInfo = _osInfo;
+
 	}
 
 	void collectCpuInfo(void)
@@ -232,9 +334,25 @@ public:
 
 	void collectServiceInfo(void)
 	{
-		// Command version 2개
-
 		// serviceName, isActive 반환
+
+		std::string serviceList_raw = exec("service --status-all");
+		std::string serviceList = std::regex_replace(serviceList_raw, std::regex(" \\[ "), "");
+		serviceList = std::regex_replace(serviceList, std::regex(" \\]  "), "");
+		std::vector<std::string> temp = split(serviceList, '\n');
+
+		for (auto it : temp)
+		{
+			ST_SERVICE_INFO _sInfo;
+			char initialChar = it[0];
+
+			_sInfo.serviceName = it.substr(1);
+			_sInfo.isActive = false;
+
+			if (initialChar == '+') _sInfo.isActive = true;
+
+			this->metaInfo->serviceList.push_back(_sInfo);
+		}
 	}
 
 };

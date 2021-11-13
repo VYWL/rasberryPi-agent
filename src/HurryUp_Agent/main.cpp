@@ -34,7 +34,8 @@ int main(int argc, char *argv[]) {
 
 	//CCollectorManager()->init();
 
-	ST_NEW_DEVICE_INFO device("Device1", "111-222-333", "Bluetooth, Wire, Lan", { ST_NEW_NETWORK_INFO("1","2","3","4"), ST_NEW_NETWORK_INFO("11", "22", "33", "44") });
+	// :: SOCKET COMMUNICATION TEST ::
+	/*ST_NEW_DEVICE_INFO device("Device1", "111-222-333", "Bluetooth, Wire, Lan", { ST_NEW_NETWORK_INFO("1","2","3","4"), ST_NEW_NETWORK_INFO("11", "22", "33", "44") });
 	ST_NEW_INFO<ST_NEW_DEVICE_INFO> info("serial", "2010-10-10 11:22:33", device);
 
 	std::tstring jsInfo;
@@ -45,9 +46,30 @@ int main(int argc, char *argv[]) {
 	std::tstring jsPacket;
 	core::WriteJsonToString(&packet, jsPacket);
 	ClientManager()->Connect();
-	ClientManager()->Send(TEXT("BOBSTART") + jsPacket + TEXT("BOBEND"));
-	osInfoGather_1();
+	ClientManager()->Send(TEXT("BOBSTART") + jsPacket + TEXT("BOBEND"));*/
 	
+	// :: getNetworkInfo TEST ::
+	/*auto result = CCollectorManager()->getDeviceInstance()->getNetworkInfo();
+	std::cout << "TOTAL IF_CNT : " << result.size() << '\n';
+	for (auto it : result)
+	{
+		std::cout << ":: INTERFACE INFO ::" << '\n';
+		std::cout << "if_name :: " << it.if_name << '\n';
+		std::cout << "m_addr :: " << it.m_addr << '\n';
+		std::cout << "inet_addr :: " << it.inet_addr << '\n';
+		std::cout << "inet6_addr :: " << it.inet6_addr << '\n';
+	}*/
+
+	// :: getServiceList TEST ::
+	/*auto result = CCollectorManager()->getDeviceInstance()->getServiceList();
+
+	std::cout << "TOTAL SERVICE_CNT : " << result.size() << '\n';
+	for (auto it : result)
+	{
+		std::cout << ":: SERVICE INFO ::" << '\n';
+		std::cout << "serviceName	:: " << it.serviceName << '\n';
+		std::cout << "isActive	:: " << it.isActive << '\n';
+	}*/
 
 	return 0;
 }
