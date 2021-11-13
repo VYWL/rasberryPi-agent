@@ -11,7 +11,7 @@ void func::GetProcessList()
 	processList.processLists = MonitoringManager()->GetProcessLists();;
 	std::tstring jsProcessList;
 	core::WriteJsonToString(&processList, jsProcessList);
-	MessageManager()->PushSendMessage(RESPONSE, PROCESS_LIST, jsProcessList);
+	//MessageManager()->PushSendMessage(RESPONSE, PROCESS_LIST, jsProcessList);
 
 	for (auto pInfo : processList.processLists) {
 		GetFileDescriptorList(std::to_string(pInfo.pid));
@@ -38,7 +38,7 @@ void func::GetFileDescriptorList(std::tstring pid)
 
 	std::tstring jsFdList;
 	core::WriteJsonToString(&fdList, jsFdList);
-	MessageManager()->PushSendMessage(RESPONSE, FD_LIST, jsFdList);
+	//MessageManager()->PushSendMessage(RESPONSE, FD_LIST, jsFdList);
 
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Get Process File Descriptor List Complete"));
 #ifdef DEBUG
@@ -73,7 +73,7 @@ void func::StartMonitoring(std::tstring data)
 		std::tstring jsMessage;
 		core::WriteJsonToString(&monitorResult, jsMessage);
 
-		MessageManager()->PushSendMessage(RESPONSE, MONITOR_RESULT, jsMessage);
+		//MessageManager()->PushSendMessage(RESPONSE, MONITOR_RESULT, jsMessage);
 	}
 
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Monitoring Target Added Complete"));
@@ -99,7 +99,7 @@ void func::StopMonitoring(std::tstring data)
 		std::tstring jsMessage;
 		core::WriteJsonToString(&monitorResult, jsMessage);
 
-		MessageManager()->PushSendMessage(RESPONSE, MONITOR_RESULT, jsMessage);
+		//MessageManager()->PushSendMessage(RESPONSE, MONITOR_RESULT, jsMessage);
 	}
 
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Monitoring Target Remove Complete"));
@@ -118,7 +118,7 @@ void func::CollectMonitoringLog(std::tstring processName, std::tstring path, std
 	std::tstring jsMonitorInfo;
 	core::WriteJsonToString(&monitorInfo, jsMonitorInfo);
 
-	MessageManager()->PushSendMessage(RESPONSE, MONITOR_INFO, jsMonitorInfo);
+	//MessageManager()->PushSendMessage(RESPONSE, MONITOR_INFO, jsMonitorInfo);
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Request Monitoring Info Complete"));
 }
 
@@ -142,7 +142,7 @@ void func::GetDeviceInfo()
 	std::tstring jsDeviceInfo;
 	core::WriteJsonToString(&deviceInfo, jsDeviceInfo);
 	
-	MessageManager()->PushSendMessage(RESPONSE, DEVICE_INFO, jsDeviceInfo);
+	//MessageManager()->PushSendMessage(RESPONSE, DEVICE_INFO, jsDeviceInfo);
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Device Info Complete"));
 }
 void func::GetModuleInfo()
@@ -162,7 +162,7 @@ void func::GetModuleInfo()
 	std::tstring jsModuleInfo;
 	core::WriteJsonToString(&moduleInfo, jsModuleInfo);
 
-	MessageManager()->PushSendMessage(RESPONSE, MODULE_INFO, jsModuleInfo);
+	//MessageManager()->PushSendMessage(RESPONSE, MODULE_INFO, jsModuleInfo);
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Module Info Complete"));
 }
 
@@ -175,14 +175,14 @@ void func::ActivateCheck(std::string data)
 
 	ST_MESSAGE message;
 
-	message.opcode = CHECK_ACTIVATE;
+	/*message.opcode = CHECK_ACTIVATE;
 	message.status = true;
-	message.data = data;
+	message.data = data;*/
 
 	std::tstring jsMessage;
 	core::WriteJsonToString(&message, jsMessage);
 
-	MessageManager()->PushSendMessage(RESPONSE, MESSAGE, jsMessage);
+	//MessageManager()->PushSendMessage(RESPONSE, MESSAGE, jsMessage);
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Request Policy Check Complete"));
 }
 void func::GetCheckStatus()
@@ -199,7 +199,7 @@ void func::GetCheckStatus()
 	std::tstring jsCheckResult;
 	core::WriteJsonToString(&checkResult, jsCheckResult);
 
-	MessageManager()->PushSendMessage(RESPONSE, CHECK_STATE, jsCheckResult);
+	//MessageManager()->PushSendMessage(RESPONSE, CHECK_STATE, jsCheckResult);
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Request Checklist Status Complete"));
 
 }

@@ -28,10 +28,10 @@ class CInspection
 {
 private:
 	// TODO :: queue가 Thread safe 한지 알아봐야한다. 아니라고 한다....
+	ST_INSPECTION_INFO*				nowTask;
 	std::queue<ST_INSPECTION_INFO*> taskQueue;
 
 public:
-	static ST_INSPECTION_INFO* nowTask;
 	
 	CInspection(void);
 	~CInspection(void);

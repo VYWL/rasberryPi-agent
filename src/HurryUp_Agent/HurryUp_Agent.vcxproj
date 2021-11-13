@@ -127,6 +127,7 @@
     <ClInclude Include="CPolicy.h" />
     <ClInclude Include="CTcpClient.h" />
     <ClInclude Include="Function.h" />
+    <ClInclude Include="new_packet.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

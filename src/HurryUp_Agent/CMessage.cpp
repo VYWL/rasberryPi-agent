@@ -56,7 +56,7 @@ void CMessage::ReceiveMessage()
 	}
 }
 
-void CMessage::PushSendMessage(PacketType type, PacketOpcode opcode, std::tstring message)
+void CMessage::PushSendMessage(PacketType type, OPCODE opcode, std::tstring message)
 {
 	sleep(0);
 	std::lock_guard<std::mutex> lock_guard(sendMessageMutex);
@@ -90,7 +90,7 @@ void CMessage::MatchReceiveMessage()
 			receiveMessage.pop();
 		}
 
-		switch (stPacketRevc->opcode) {
+		/*switch (stPacketRevc->opcode) {
 		case PROCESS_LIST:
 			result = std::async(std::launch::async, func::GetProcessList);
 			break;
@@ -115,7 +115,7 @@ void CMessage::MatchReceiveMessage()
 		default:
 			core::Log_Error(TEXT("CMessage.cpp - [%s] : %s "), TEXT("Packet Type Error"), TEXT(stPacketRevc->data.c_str()));
 			break;
-		}
+		}*/
 	}
 }
 

@@ -35,7 +35,7 @@ void CInspection::addTask(std::string _data)
 
 void CInspection::execTask(void)
 {
-	// 0. queue에서 하나 뽑
+	// 0. queue에서 하나 뽑기
 	// 1. 실행
 	// 2. 파일 다운로드 및 실행 등등
 	// 3. 끝나면 메시지 보내기

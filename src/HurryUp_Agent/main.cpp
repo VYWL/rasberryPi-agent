@@ -4,7 +4,7 @@
 #include "Function.h"
 #include "utils.h"
 #include "CCollector.h"
-
+#include "CTcpClient.h"
 
 #define BUFFER_SIZE 1024
 
@@ -15,12 +15,12 @@ int main(int argc, char *argv[]) {
     // pid_t pid = GetPIDbyName("bash"); // If -1 = not found, if -2 = proc fs access error
     // printf("PID %d\n", pid);
     // return EXIT_SUCCESS;
-
+	
 	// :: NETINFO TEST ::
-	// std::cout << ":: Method 1 ::" << "\n";
-	// networkInfoGather_1();
-	// std::cout << ":: Method 2 ::" << "\n";
-	// networkInfoGather_2();
+	 //std::cout << ":: Method 1 ::" << "\n";
+	 //networkInfoGather_1();
+	 //std::cout << ":: Method 2 ::" << "\n";
+	 //networkInfoGather_2();
 
 	// :: SERVICEINFO TEST ::
 	// std::cout << ":: Method 1 ::" << "\n";
@@ -29,8 +29,25 @@ int main(int argc, char *argv[]) {
 	// :: CCollector Initializing test ::
 	// CCollector* tmp = new CCollector;
 	// Debug_CDevice(tmp->getDeviceInstance());
-	
 
+	// :: THREAD TEST ::
+
+	//CCollectorManager()->init();
+
+	ST_NEW_DEVICE_INFO device("Device1", "111-222-333", "Bluetooth, Wire, Lan", { ST_NEW_NETWORK_INFO("1","2","3","4"), ST_NEW_NETWORK_INFO("11", "22", "33", "44") });
+	ST_NEW_INFO<ST_NEW_DEVICE_INFO> info("serial", "2010-10-10 11:22:33", device);
+
+	std::tstring jsInfo;
+	core::WriteJsonToString(&info, jsInfo);
+	std::cout << jsInfo << std::endl;
+
+	ST_NEW_PACKET_INFO packet(DEVICE, jsInfo);
+	std::tstring jsPacket;
+	core::WriteJsonToString(&packet, jsPacket);
+	ClientManager()->Connect();
+	ClientManager()->Send(TEXT("BOBSTART") + jsPacket + TEXT("BOBEND"));
+	osInfoGather_1();
+	
 
 	return 0;
 }
@@ -64,7 +81,7 @@ int main(int argc, char *argv[]) {
 	core::Log_Info(TEXT("main.cpp - [%s]"), TEXT("Start Agent Program!"));
 	try
 	{
-		std::future<void> a = std::async(std::launch::async, &CMessage::Init, MessageManager());
+		std::future<void> a = std::async(std::launch::async, &CMessage::Init, //MessageManager());
 		std::future<void> b = std::async(std::launch::async, &CMonitoring::StartMonitoring, MonitoringManager());
 	}
 	catch (std::exception& e)

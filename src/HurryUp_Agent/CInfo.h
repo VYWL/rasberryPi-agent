@@ -31,7 +31,7 @@ public:
 		this->serialNumber = "0000";
 		this->metaInfo = new ST_INFO;
 		this->timestamp = getNowUnixTime();
-	}
+	}  
 
 	~CInfo	(void)
 	{

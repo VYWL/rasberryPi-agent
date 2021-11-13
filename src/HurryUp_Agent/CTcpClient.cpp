@@ -107,7 +107,7 @@ int CTcpClient::Recv()
 				ST_PACKET_INFO* stPacketRead = new ST_PACKET_INFO();
 				core::ReadJsonFromString(stPacketRead, messageBuffers.substr(start_location + 8, end_location - (start_location + 8)));
 
-				MessageManager()->PushReceiveMessage(stPacketRead);
+				//MessageManager()->PushReceiveMessage(stPacketRead);
 				messageBuffers = messageBuffers.substr(start_location + 6);
 			}
 		}
@@ -134,6 +134,8 @@ bool CTcpClient::Live()
 
 CTcpClient* CTcpClient::GetInstance()
 {
-	static CTcpClient instance(env.ip, env.port);
+	//static CTcpClient instance(env.ip, env.port);
+	//임시로 하드코딩
+	static CTcpClient instance("14.138.200.178", "55555");
 	return &instance;
 }

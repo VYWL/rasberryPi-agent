@@ -406,3 +406,7 @@ pid_t GetPIDbyName(const char* cchrptr_ProcessName)
 {
 	return GetPIDbyName(cchrptr_ProcessName, CASE_INSENSITIVE, EXACT_MATCH);
 }
+
+// For Interval
+
+
