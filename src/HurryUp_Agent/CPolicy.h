@@ -27,6 +27,7 @@ private:
 	
 	std::string timestamp;
 	std::vector<ST_POLICY_INFO_*> activePolicyList;
+	std::mutex policyMutex;
 
 public:
 
@@ -43,6 +44,7 @@ public:
 	void							initPolicyList(void);
 
 	// TODO :: 파일 혹은 명령어를 받고 정책을 적용 및 해제하는 함수
+	// _code에는 ACTIVATE_POLICY, DEACTIVATE_POLICY 등이 있음. 
 	static void applyPolicyState(int _code, std::string _data);
 
 	void refreshTimestamp(void);

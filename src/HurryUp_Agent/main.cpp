@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	ClientManager()->Send(TEXT("BOBSTART") + jsPacket + TEXT("BOBEND"));*/
 	
 	// :: getNetworkInfo TEST ::
-	/*auto result = CCollectorManager()->getDeviceInstance()->getNetworkInfo();
+	/* auto result = CCollectorManager()->getDeviceInstance()->getNetworkInfo();
 	std::cout << "TOTAL IF_CNT : " << result.size() << '\n';
 	for (auto it : result)
 	{
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 	}*/
 
 	// :: getServiceList TEST ::
-	/*auto result = CCollectorManager()->getDeviceInstance()->getServiceList();
+	/* auto result = CCollectorManager()->getDeviceInstance()->getServiceList();
 
 	std::cout << "TOTAL SERVICE_CNT : " << result.size() << '\n';
 	for (auto it : result)

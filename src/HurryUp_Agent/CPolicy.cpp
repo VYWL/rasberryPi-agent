@@ -4,7 +4,7 @@
 CPolicy::CPolicy(void){ this->timestamp = getNowUnixTime(); }
 CPolicy::~CPolicy(void){}
 
-void			 CPolicy::addPolicy(ST_POLICY_INFO_* _policyInfo) 
+void CPolicy::addPolicy(ST_POLICY_INFO_* _policyInfo) 
 {
 	this->activePolicyList.push_back(_policyInfo);
 	this->refreshTimestamp();
@@ -64,8 +64,8 @@ std::vector<ST_POLICY_INFO_*> CPolicy::getPolicyList(void)
 void CPolicy::initPolicyList(void)
 {
 	// 0. 서버에서 정보를 가져오기
-	// 1. 반복문으로 addPolicy 실행
-	// 2. timestamp 갱신
+	// 1. 반복문으로 applyPolicyState 실행
+	// 2. timestamp 갱신 X
 }
 
 // TODO :: 파일 혹은 명령어를 받고 정책을 적용 및 해제하는 함수
@@ -75,8 +75,8 @@ void CPolicy::applyPolicyState(int _code, std::string _data)
 	// 0. 공통
 	// _data를 구조체로 전환 (파일을 담은 구조체)
 	// 파일을 읽고 실행
-	// activeList에 넣고 
-
+	// activeList에 
+	
 	// 1. _code == ACTIVATE_POLICY
 	// 실행 결과를 받고, 파일을 지우면서 ST_POLICY_INFO 구조체 할당
 	// activeList에 넣기
@@ -84,6 +84,10 @@ void CPolicy::applyPolicyState(int _code, std::string _data)
 	// 2. _code == DEACTIVATE_POLICY
 	// 실행 결과를 받기.
 	// activeList에 해당 정책 id에 해당하는 구조체 delete
+	
+	// 3. _code == UPDATE_POLICY
+	// 실행 결과를 받기.
+	// activeList에 해당 정책 id에 해당하는 구조체 timestamp 업데이트
 }
 
 void CPolicy::refreshTimestamp(void) 
