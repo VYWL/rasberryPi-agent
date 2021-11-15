@@ -6,12 +6,16 @@ CPolicy::~CPolicy(void){}
 
 void CPolicy::addPolicy(ST_POLICY_INFO_* _policyInfo) 
 {
+	std::lock_guard<std::mutex> lock_guard(this->policyMutex);
+
 	this->activePolicyList.push_back(_policyInfo);
 	this->refreshTimestamp();
 }
 
 ST_POLICY_INFO_* CPolicy::findPolicy(int _idx)
 {
+	std::lock_guard<std::mutex> lock_guard(this->policyMutex);
+
 	if (_idx < 0 || _idx >= this->activePolicyList.size()) return NULL;
 
 	return this->activePolicyList[_idx];
@@ -20,6 +24,7 @@ ST_POLICY_INFO_* CPolicy::findPolicy(int _idx)
 ST_POLICY_INFO_* CPolicy::findPolicy(std::string _name)
 {
 	// 선형탐색 => Policy가 1000개를 넘지 않으므로.
+	std::lock_guard<std::mutex> lock_guard(this->policyMutex);
 
 	for (auto policyInfo : this->activePolicyList)
 		if (policyInfo->policyName == _name) return policyInfo;
@@ -29,6 +34,8 @@ ST_POLICY_INFO_* CPolicy::findPolicy(std::string _name)
 
 void CPolicy::deletePolicy(int _idx)
 {
+	std::lock_guard<std::mutex> lock_guard(this->policyMutex);
+
 	if (_idx < 0 || _idx >= this->activePolicyList.size()) return;
 	
 	// TODO :: vector erase의 효율성?
@@ -38,6 +45,8 @@ void CPolicy::deletePolicy(int _idx)
 
 void CPolicy::deletePolicy(std::string _name)
 {
+	std::lock_guard<std::mutex> lock_guard(this->policyMutex);
+
 	// 탐색
 	int _idx = -1;
 	for (int i = 0; i < this->activePolicyList.size(); ++i)
@@ -57,6 +66,8 @@ void CPolicy::deletePolicy(std::string _name)
 
 std::vector<ST_POLICY_INFO_*> CPolicy::getPolicyList(void)
 {
+	std::lock_guard<std::mutex> lock_guard(this->policyMutex);
+
 	this->refreshTimestamp();
 	return this->activePolicyList;
 }

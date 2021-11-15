@@ -1,12 +1,18 @@
 #pragma once
 #include "CInfo.h"
 
-struct ST_NETWORK_INTERFACE_INFO
+struct ST_NETWORK_INTERFACE_INFO : public core::IFormatterObject
 {
 	std::string if_name;
 	std::string m_addr;
 	std::string inet_addr;
 	std::string inet6_addr;
+
+	ST_NETWORK_INTERFACE_INFO(void)
+	{}
+	ST_NETWORK_INTERFACE_INFO(std::tstring _if_name, std::tstring _m_addr, std::tstring _inet_addr, std::tstring _inet6_addr)
+		: if_name(_if_name), m_addr(_m_addr), inet_addr(_inet_addr), inet6_addr(_inet6_addr)
+	{}
 
 	bool operator== (const ST_NETWORK_INTERFACE_INFO& t)
 	{
@@ -15,12 +21,28 @@ struct ST_NETWORK_INTERFACE_INFO
 			this->inet_addr == t.inet_addr &&
 			this->inet6_addr == t.inet6_addr;
 	}
+
+	void OnSync(core::IFormatter& formatter)
+	{
+		formatter
+			+ core::sPair(TEXT("If_name"), if_name)
+			+ core::sPair(TEXT("Mac_addr"), m_addr)
+			+ core::sPair(TEXT("Inet_addr"), inet_addr)
+			+ core::sPair(TEXT("Inet6_addr"), inet6_addr)
+			;
+	}
 };
 
-struct ST_OS_INFO
+struct ST_OS_INFO : public core::IFormatterObject
 {
 	std::string osName;
 	std::string osRelease;
+
+	ST_OS_INFO(void)
+	{}
+	ST_OS_INFO(std::tstring _osName, std::tstring _osRelease)
+		: osName(_osName), osRelease(_osRelease)
+	{}
 
 	ST_OS_INFO* operator= (const ST_OS_INFO* t)
 	{
@@ -33,17 +55,39 @@ struct ST_OS_INFO
 		return this->osName == t.osName &&
 			this->osRelease == t.osRelease;
 	}
+
+	void OnSync(core::IFormatter& formatter)
+	{
+		formatter
+			+ core::sPair(TEXT("OsName"), osName)
+			+ core::sPair(TEXT("OsRelease"), osRelease)
+			;
+	}
 }; 
 
-struct ST_SERVICE_INFO
+struct ST_SERVICE_INFO : public core::IFormatterObject
 {
 	std::string serviceName;
 	bool isActive;
+
+	ST_SERVICE_INFO(void)
+	{}
+	ST_SERVICE_INFO(std::tstring _serviceName, bool _isActive)
+		: serviceName(_serviceName), isActive(_isActive)
+	{}
 
 	bool operator== (const ST_SERVICE_INFO& t)
 	{
 		return this->serviceName == t.serviceName &&
 			this->isActive == t.isActive;
+	}
+
+	void OnSync(core::IFormatter& formatter)
+	{
+		formatter
+			+ core::sPair(TEXT("ServiceName"), serviceName)
+			+ core::sPair(TEXT("IsActive"), isActive)
+			;
 	}
 };
 
@@ -51,7 +95,7 @@ struct ST_SERVICE_INFO
 // modelNumber는 번호 용례가 나온다면 자료형 변경
 // 기존 ST_DEVICE_INFO가 사라지면 아래 구조체명 변경
 // metaInfo에 더 넣기 => 11/12 더 반영
-struct ST_DEVICE_INFO_
+struct ST_DEVICE_INFO_ : public core::IFormatterObject
 {
 	std::string name;
 	ST_OS_INFO	osInfo;
@@ -93,6 +137,18 @@ struct ST_DEVICE_INFO_
 			this->moduleCount == t.moduleCount;
 	}
 
+	void OnSync(core::IFormatter& formatter)
+	{
+		formatter
+			+ core::sPair(TEXT("Name"), name)
+			+ core::sPair(TEXT("OsInfo"), osInfo)
+			+ core::sPair(TEXT("ModelNumber"), modelNumber)
+			+ core::sPair(TEXT("ConnectMethod"), connectMethod)
+			+ core::sPair(TEXT("NetworkInfo"), networkInfo)
+			+ core::sPair(TEXT("ModuleCount"), moduleCount)
+			+ core::sPair(TEXT("ServiceList"), serviceList)
+			;
+	}
 };
 
 class CDevice_ : public CInfo<ST_DEVICE_INFO_>
@@ -282,6 +338,7 @@ public:
 
 		freeifaddrs(ifaddr);
 
+		this->metaInfo->networkInfo.clear();
 		for (auto it : checker)
 		{
 			ST_NETWORK_INTERFACE_INFO temp;
@@ -341,6 +398,7 @@ public:
 		serviceList = std::regex_replace(serviceList, std::regex(" \\]  "), "");
 		std::vector<std::string> temp = split(serviceList, '\n');
 
+		this->metaInfo->serviceList.clear();
 		for (auto it : temp)
 		{
 			ST_SERVICE_INFO _sInfo;

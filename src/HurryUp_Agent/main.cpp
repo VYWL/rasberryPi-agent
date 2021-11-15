@@ -71,6 +71,11 @@ int main(int argc, char *argv[]) {
 		std::cout << "isActive	:: " << it.isActive << '\n';
 	}*/
 
+
+	ClientManager()->Connect();
+
+	CCollectorManager()->startInterval();
+
 	return 0;
 }
 

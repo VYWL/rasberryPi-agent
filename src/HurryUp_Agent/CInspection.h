@@ -30,6 +30,7 @@ private:
 	// TODO :: queue가 Thread safe 한지 알아봐야한다. 아니라고 한다....
 	ST_INSPECTION_INFO*				nowTask;
 	std::queue<ST_INSPECTION_INFO*> taskQueue;
+	std::mutex						taskQueueMutex;
 
 public:
 	
@@ -41,6 +42,6 @@ public:
 	ST_INSPECTION_INFO* getNowTaskInfo(void);
 	
 	// TODO :: Message로부터 받은 정보를 가공하여 Queue에 추가. => 아직 인자의 자료형 void라 수정필요
-	static void addTask(std::string);
-	static void execTask(void);
+	void addTask(std::string);
+	void execTask(void);
 };

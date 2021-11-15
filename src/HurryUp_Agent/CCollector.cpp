@@ -1,4 +1,5 @@
 #include "CCollector.h"
+#include "CTcpClient.h"
 
 CCollector::CCollector(void) 
 {
@@ -6,7 +7,7 @@ CCollector::CCollector(void)
 	this->device = new CDevice_;
 	this->device->collectAllData();
 
-	this->interval = 500;
+	this->interval = 3000;
 }
 
 CCollector::~CCollector(void)
@@ -145,7 +146,11 @@ void CCollector::init()
 void CCollector::startInterval()
 {
 	while(1)
+	{
 		setInterval(this->cancelIntervalBoolean, this->interval, collectInfo);
+
+		// TODO :: Log 남기는 로직
+	}
 }
 
 void CCollector::changeInterval(int _interval)
@@ -166,5 +171,17 @@ int isValidModuleData(CModule* _t)
 void collectInfo()
 {
 	// 보낼 데이터를 수집하고, 메시지를 만든다.
+	CCollectorManager()->getDeviceInstance()->collectAllData();
 
+	ST_DEVICE_INFO_ sendData = *(CCollectorManager()->getDeviceInstance()->getMetaInfo());
+	
+	std::tstring jsInfo;
+	core::WriteJsonToString(&sendData, jsInfo);
+	std::cout << jsInfo << std::endl;
+
+	ST_NEW_PACKET_INFO packet(DEVICE, jsInfo);
+	std::tstring jsPacket;
+	core::WriteJsonToString(&packet, jsPacket);
+
+	//ClientManager()->Send(TEXT("BOBSTART") + jsPacket + TEXT("BOBEND")); 
 }
