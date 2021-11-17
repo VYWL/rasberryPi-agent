@@ -7,7 +7,7 @@ CCollector::CCollector(void)
 	this->device = new CDevice_;
 	this->device->collectAllData();
 
-	this->interval = 3000;
+	this->interval = 1000 * 60 * 5;
 }
 
 CCollector::~CCollector(void)
@@ -153,10 +153,31 @@ void CCollector::startInterval()
 	}
 }
 
-void CCollector::changeInterval(int _interval)
+void CCollector::changeInterval(std::string data)
 {
-	this->interval = _interval;
+	// 데이터 변환
+
+	ST_INTERVAL_INFO newData;
+
+	core::ReadJsonFromString(&newData, data);
+
+	// 적용
+
+	this->interval = newData.interval;
 	this->cancelIntervalBoolean.store(false);
+
+	// 알림
+
+	ST_MESSAGE message;
+
+	/*message.opcode = CHANGE_INTERVAL;
+	message.status = true;
+	message.data = data;*/
+
+	std::tstring jsMessage;
+	core::WriteJsonToString(&message, jsMessage);
+
+	//MessageManager()->PushSendMessage(RESPONSE, MESSAGE, jsMessage);
 }
 
 
@@ -183,5 +204,5 @@ void collectInfo()
 	std::tstring jsPacket;
 	core::WriteJsonToString(&packet, jsPacket);
 
-	//ClientManager()->Send(TEXT("BOBSTART") + jsPacket + TEXT("BOBEND")); 
+	ClientManager()->Send(TEXT("BOBSTART") + jsPacket + TEXT("BOBEND")); 
 }

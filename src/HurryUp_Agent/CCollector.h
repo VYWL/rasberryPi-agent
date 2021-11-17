@@ -11,6 +11,23 @@ enum ModuleErrorCode
 	NO_CONNECTTION_TYPE,
 };
 
+struct ST_INTERVAL_INFO : public core::IFormatterObject
+{
+	int interval;
+
+	ST_INTERVAL_INFO(void)
+	{}
+	ST_INTERVAL_INFO(int _interval) : interval(_interval)
+	{}
+
+	void OnSync(core::IFormatter& formatter)
+	{
+		formatter
+			+ core::sPair(TEXT("Interval"), interval)
+			;
+	}
+};
+
 class CCollector
 {
 private:
