@@ -6,7 +6,6 @@
 #include <sys/inotify.h>
 #include <map>
 #include <string>
-#include <filesystem>
 #include <iostream>
 #include <fstream>
 #include "utils.h"

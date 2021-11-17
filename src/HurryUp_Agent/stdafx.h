@@ -41,6 +41,7 @@
 #include <chrono>
 #include <thread>
 #include <functional>
+#include <netdb.h>
 #include "new_packet.h"
 
 struct ST_ENV
