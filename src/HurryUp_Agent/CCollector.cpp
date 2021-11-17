@@ -1,5 +1,7 @@
 #include "CCollector.h"
 #include "CTcpClient.h"
+#include "CMessage.h"
+#include "Function.h"
 
 CCollector::CCollector(void) 
 {
@@ -147,39 +149,11 @@ void CCollector::startInterval()
 {
 	while(1)
 	{
-		setInterval(this->cancelIntervalBoolean, this->interval, collectInfo);
+		setInterval(this->cancelIntervalBoolean, this->interval, func::GetDeviceInfo);
 
 		// TODO :: Log 남기는 로직
 	}
 }
-
-void CCollector::changeInterval(std::string data)
-{
-	// 데이터 변환
-
-	ST_INTERVAL_INFO newData;
-
-	core::ReadJsonFromString(&newData, data);
-
-	// 적용
-
-	this->interval = newData.interval;
-	this->cancelIntervalBoolean.store(false);
-
-	// 알림
-
-	ST_MESSAGE message;
-
-	/*message.opcode = CHANGE_INTERVAL;
-	message.status = true;
-	message.data = data;*/
-
-	std::tstring jsMessage;
-	core::WriteJsonToString(&message, jsMessage);
-
-	//MessageManager()->PushSendMessage(RESPONSE, MESSAGE, jsMessage);
-}
-
 
 int isValidModuleData(CModule* _t)
 {
@@ -187,22 +161,4 @@ int isValidModuleData(CModule* _t)
 	if(_t->getConnectionType() == 0)	return NO_CONNECTTION_TYPE;
 
 	return VAILD;
-}
-
-void collectInfo()
-{
-	// 보낼 데이터를 수집하고, 메시지를 만든다.
-	CCollectorManager()->getDeviceInstance()->collectAllData();
-
-	ST_DEVICE_INFO_ sendData = *(CCollectorManager()->getDeviceInstance()->getMetaInfo());
-	
-	std::tstring jsInfo;
-	core::WriteJsonToString(&sendData, jsInfo);
-	std::cout << jsInfo << std::endl;
-
-	ST_NEW_PACKET_INFO packet(DEVICE, jsInfo);
-	std::tstring jsPacket;
-	core::WriteJsonToString(&packet, jsPacket);
-
-	ClientManager()->Send(TEXT("BOBSTART") + jsPacket + TEXT("BOBEND")); 
 }

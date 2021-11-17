@@ -1,18 +1,5 @@
 #include "CDevice_temp.h"
 
-void Debug_CDevice(CDevice_* tmp)
-{
-	std::cout << ":: CDevice Create Test ::" << '\n';
-	std::cout << ":: serialNum = " << tmp->getSerialNumber() << '\n';
-
-	ST_DEVICE_INFO_* tmp_dinfo = tmp->getMetaInfo();
-	std::cout << ":: metaInfo->name = " << tmp->getName() << '\n';
-	//std::cout << ":: metaInfo->osName = " << tmp_dinfo->osName << '\n';
-	std::cout << ":: metaInfo->modelNumber = " << tmp_dinfo->modelNumber << '\n';
-	std::cout << ":: timestamp = " << tmp->getLastModifiedTime() << '\n';
-	//std::cout << ":: connectionInfo = " << tmp->getConnectionInfo() << '\n';
-}
-
 /*
 
 CDevice_::CDevice_(void)

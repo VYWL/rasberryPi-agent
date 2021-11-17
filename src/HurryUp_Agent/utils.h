@@ -22,19 +22,6 @@ std::vector<std::string> split(std::string, char);
 std::string trim(const std::string&);
 
 
-// TEST
-
-void osInfoGather_1();
-void osInfoGather_2();
-void osInfoGather_3();
-
-void networkInfoGather_1();
-void networkInfoGather_2();
-void networkInfoGather_3();
-
-void serviceInfoGather_1();
-void serviceInfoGather_2();
-
 // Log or Terminal
 std::string SendToTerminal(const char *);
 std::string exec(const char *);

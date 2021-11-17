@@ -151,18 +151,18 @@ struct ST_DEVICE_INFO_ : public core::IFormatterObject
 	}
 };
 
-class CDevice_ : public CInfo<ST_DEVICE_INFO_>
+class CDevice_ : public CInfo<ST_NEW_DEVICE_INFO>
 {
 private:
 
-	ST_DEVICE_INFO_* metaInfo;
+	ST_NEW_DEVICE_INFO* metaInfo;
 
 public:
 
 	CDevice_(void)
 	{
 
-		this->metaInfo						= new ST_DEVICE_INFO_;
+		this->metaInfo						= new ST_NEW_DEVICE_INFO;
 		this->metaInfo->name				= "DName";
 		this->metaInfo->osInfo.osName		= "OsName";
 		this->metaInfo->osInfo.osRelease	= "OsRelease";
@@ -180,7 +180,7 @@ public:
 
 	// Getter
 
-	ST_DEVICE_INFO_* getMetaInfo(void)		{ return this->metaInfo; } // 전체 구조체 반환
+	ST_NEW_DEVICE_INFO* getMetaInfo(void)		{ return this->metaInfo; } // 전체 구조체 반환
 
 	// TODO :: 구조체 확정되면 추후 추가
 	std::string getName(void)				{ return this->metaInfo->name; }
@@ -189,9 +189,9 @@ public:
 	std::string getModelNumber(void)		{ return this->metaInfo->modelNumber; }
 	std::vector<std::string>	
 				getConnectionInfo(void)		{ return this->metaInfo->connectMethod; } // 반환 형식 달라질 가능성 존재 (Property 때문에)
-	std::vector<ST_NETWORK_INTERFACE_INFO>
+	std::vector<ST_NEW_NETWORK_INTERFACE_INFO>
 				getNetworkInfo(void)		{ return this->metaInfo->networkInfo; }
-	std::vector<ST_SERVICE_INFO>
+	std::vector<ST_NEW_SERVICE_INFO>
 				getServiceList(void)		{ return this->metaInfo->serviceList; }
 
 	// Setter
@@ -204,9 +204,9 @@ public:
 	void setOsName(std::string _osNm)		{ this->metaInfo->osInfo.osName		= _osNm; }
 	void setReleaseName(std::string _osRls)		{ this->metaInfo->osInfo.osRelease	= _osRls; }
 	void setModelNumber(std::string _mdNum)	{ this->metaInfo->modelNumber		= _mdNum; }
-	void setMetaInfo(ST_DEVICE_INFO_& _m)	{ *this->metaInfo					= _m; }
+	void setMetaInfo(ST_NEW_DEVICE_INFO& _m)	{ *this->metaInfo					= _m; }
 
-	void addNetworkInfo(ST_NETWORK_INTERFACE_INFO& _nInfo)
+	void addNetworkInfo(ST_NEW_NETWORK_INTERFACE_INFO& _nInfo)
 	{
 		// 예외 => 이미 존재하는 Network info인 경우
 		for (auto it : this->metaInfo->networkInfo)
@@ -215,7 +215,7 @@ public:
 		this->metaInfo->networkInfo.push_back(_nInfo);
 	}
 
-	void addServiceInfo(ST_SERVICE_INFO& _sInfo)
+	void addServiceInfo(ST_NEW_SERVICE_INFO& _sInfo)
 	{
 		// 예외 => 이미 존재하는 Network info인 경우
 		for (auto it : this->metaInfo->serviceList)
@@ -276,7 +276,7 @@ public:
 		// Command version => ifconfig, ip addr 관련 => 기존 함수 사용
 		// File version	 => /sys/class/net 사용
 
-		std::vector < ST_NETWORK_INTERFACE_INFO > result;
+		std::vector < ST_NEW_NETWORK_INTERFACE_INFO > result;
 
 		// ifaddr 사용
 		struct ifaddrs* ifaddr;
@@ -289,7 +289,7 @@ public:
 			exit(EXIT_FAILURE);
 		}
 
-		std::map<std::string, ST_NETWORK_INTERFACE_INFO*> checker;
+		std::map<std::string, ST_NEW_NETWORK_INTERFACE_INFO*> checker;
 		// 링크드 리스트 형식으로 되어있음. 하위 내용은 일단 출력 형식으로 구현.
 		for (struct ifaddrs* ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
 			if (ifa->ifa_addr == NULL)
@@ -299,7 +299,7 @@ public:
 
 			if (checker.find(temp) == checker.end())
 			{
-				auto nInfo = new ST_NETWORK_INTERFACE_INFO;
+				auto nInfo = new ST_NEW_NETWORK_INTERFACE_INFO;
 				nInfo->if_name = temp;
 
 				checker[temp] = nInfo;
@@ -351,7 +351,7 @@ public:
 		this->metaInfo->networkInfo.clear();
 		for (auto it : checker)
 		{
-			ST_NETWORK_INTERFACE_INFO temp;
+			ST_NEW_NETWORK_INTERFACE_INFO temp;
 			temp.if_name	= it.second->if_name;
 			temp.m_addr		= it.second->m_addr;
 			temp.inet_addr	= it.second->inet_addr;
@@ -370,7 +370,7 @@ public:
 
 		// osName, release가 포함됨.
 
-		ST_OS_INFO _osInfo;
+		ST_NEW_OS_INFO _osInfo;
 
 		struct utsname buf;
 
@@ -411,7 +411,7 @@ public:
 		this->metaInfo->serviceList.clear();
 		for (auto it : temp)
 		{
-			ST_SERVICE_INFO _sInfo;
+			ST_NEW_SERVICE_INFO _sInfo;
 			char initialChar = it[0];
 
 			_sInfo.serviceName = it.substr(1);
@@ -424,5 +424,3 @@ public:
 	}
 
 };
-
-void Debug_CDevice(CDevice_*);

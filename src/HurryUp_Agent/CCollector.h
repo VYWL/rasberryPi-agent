@@ -36,8 +36,6 @@ private:
 	std::vector<CModule*> moduleList;
 	CMonitoring* monitor;
 
-	std::atomic_bool cancelIntervalBoolean;
-	int interval;
 
 	CCollector(void);
 	~CCollector	(void);
@@ -47,6 +45,8 @@ public:
 	// Constructor
 	
 	static CCollector* getInstance(void);
+	std::atomic_bool cancelIntervalBoolean;
+	int interval;
 
 	// Getter
 
@@ -72,14 +72,13 @@ public:
 
 	void init();
 	void startInterval();
-	void changeInterval(int);
 
 	// API > CCollector <=> CMessage
 
 };
 
 int isValidModuleData(CModule*);
-void collectInfo(void);
+
 
 inline CCollector* CCollectorManager(void)
 {

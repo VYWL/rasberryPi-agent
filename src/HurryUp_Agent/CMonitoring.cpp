@@ -78,7 +78,7 @@ int CMonitoring::FindFileEndPosition(std::ifstream& fileFd) {
 	}
 }
 
-int CMonitoring::AddMonitoringTarget(ST_MONITOR_TARGET target)
+int CMonitoring::AddMonitoringTarget(ST_NEW_MONITOR_TARGET target)
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Start"), TEXT(target.logPath.c_str()));
 
@@ -138,7 +138,7 @@ int CMonitoring::AddMonitoringTarget(ST_MONITOR_TARGET target)
 	core::Log_Info(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Complete"), TEXT(target.logPath.c_str()));
 	return 0;
 }
-int CMonitoring::RemoveMonitoringTarget(ST_MONITOR_TARGET target)
+int CMonitoring::RemoveMonitoringTarget(ST_NEW_MONITOR_TARGET target)
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Start"), TEXT(target.logPath.c_str()));
 	sleep(0);
@@ -277,12 +277,12 @@ void CMonitoring::EndMonitoring()
 	terminate = true;
 }
 
-std::vector<ST_PROCESS_INFO> CMonitoring::GetProcessLists()
+std::vector<ST_NEW_PROCESS_INFO> CMonitoring::GetProcessLists()
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Get ProcessList Start"));
 
 	std::tstring path = TEXT("/proc");
-	std::vector<ST_PROCESS_INFO> processLists;
+	std::vector<ST_NEW_PROCESS_INFO> processLists;
 
 	int i = 0;
 
@@ -298,7 +298,7 @@ std::vector<ST_PROCESS_INFO> CMonitoring::GetProcessLists()
 	while ((de = readdir(dir)) != NULL)
 	{
 		if (strtol(de->d_name, NULL, 10) > 0) {
-			ST_PROCESS_INFO pinfo;
+			ST_NEW_PROCESS_INFO pinfo;
 			std::tstring next;
 
 			std::tstring path("/proc/" + TEXT(std::string(de->d_name)));
@@ -352,12 +352,12 @@ std::vector<ST_PROCESS_INFO> CMonitoring::GetProcessLists()
 	return processLists;
 }
 
-std::vector<ST_FD_INFO> CMonitoring::GetFdLists(std::tstring pid)
+std::vector<ST_NEW_FD_INFO> CMonitoring::GetFdLists(std::tstring pid)
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Get ProcessFileDescriptorList Start"));
 
 	std::tstring path = TEXT("/proc/") + TEXT(pid) + TEXT("/fd");
-	std::vector<ST_FD_INFO> fdLists;
+	std::vector<ST_NEW_FD_INFO> fdLists;
 
 	if (!core::PathFileExistsA(path.c_str())){
 		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("Process Is Not Valid."), TEXT(path.c_str()));
@@ -378,7 +378,7 @@ std::vector<ST_FD_INFO> CMonitoring::GetFdLists(std::tstring pid)
 	while ((de = readdir(dir)) != NULL)
 	{
 		char buf[1024];
-		ST_FD_INFO pinfo;
+		ST_NEW_FD_INFO pinfo;
 		std::tstring linkPath = TEXT(path) + TEXT("/") + TEXT(de->d_name);
 
 		int length = readlink(linkPath.c_str(), buf, sizeof(buf));

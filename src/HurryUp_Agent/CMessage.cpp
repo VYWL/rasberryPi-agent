@@ -90,32 +90,34 @@ void CMessage::MatchReceiveMessage()
 			receiveMessage.pop();
 		}
 
-		/*switch (stPacketRevc->opcode) {
+		switch (stPacketRevc->opcode) {
 		case PROCESS_LIST:
 			result = std::async(std::launch::async, func::GetProcessList);
 			break;
 		case FD_LIST:
 			result = std::async(std::launch::async, func::GetFileDescriptorList, stPacketRevc->data);
 			break;
-		case MONITOR_ADD:
+		case MONITORING_ACTIVATE:
 			result = std::async(std::launch::async, func::StartMonitoring, stPacketRevc->data);
 			break;
-		case MONITOR_REMOVE:
+		case MONITORING_INACTIVATE:
 			result = std::async(std::launch::async, func::StopMonitoring, stPacketRevc->data);
 			break;
-		case DEVICE_INFO:
+		case DEVICE:
 			result = std::async(std::launch::async, func::GetDeviceInfo);
 			break;
-		case MODULE_INFO:
+		/*case MODULE_INFO:
 			result = std::async(std::launch::async, func::GetModuleInfo);
-			break;
-		case CHECK_ACTIVATE:
+			break;*/
+		/*case CHECK_ACTIVATE:
 			result = std::async(std::launch::async, func::ActivateCheck, stPacketRevc->data);
-			break;
+			break;*/
+		case CHANGE_INTERVAL:
+			result = std::async(std::launch::async, func::ChangeInterval, stPacketRevc->data);
 		default:
 			core::Log_Error(TEXT("CMessage.cpp - [%s] : %s "), TEXT("Packet Type Error"), TEXT(stPacketRevc->data.c_str()));
 			break;
-		}*/
+		}
 	}
 }
 

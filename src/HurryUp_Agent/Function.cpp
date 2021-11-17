@@ -2,18 +2,22 @@
 #include "CMessage.h"
 #include "CMonitoring.h"
 #include "CDevice.h"
+#include "CCollector.h"
+#include "utils.h"
 
 void func::GetProcessList()
 {
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Get Process List"));
 	
-	ST_PROCESS_LIST processList;
-	processList.processLists = MonitoringManager()->GetProcessLists();;
+	ST_NEW_VECTOR_DATABASE<ST_NEW_PROCESS_INFO> processList;
+	processList.metaInfo = MonitoringManager()->GetProcessLists();
+	processList.key = TEXT("MetaInfo");
+
 	std::tstring jsProcessList;
 	core::WriteJsonToString(&processList, jsProcessList);
-	//MessageManager()->PushSendMessage(RESPONSE, PROCESS_LIST, jsProcessList);
+	MessageManager()->PushSendMessage(RESPONSE, PROCESS_LIST, jsProcessList);
 
-	for (auto pInfo : processList.processLists) {
+	for (auto pInfo : processList.metaInfo) {
 		GetFileDescriptorList(std::to_string(pInfo.pid));
 		core::Log_Debug(TEXT("========================================"));
 		core::Log_Debug(TEXT("Function.cpp - [pid] : %d"), pInfo.pid);
@@ -31,14 +35,14 @@ void func::GetFileDescriptorList(std::tstring pid)
 {
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Get Process File Descriptor List"));
 	
-	ST_FD_LIST fdList;
+	ST_NEW_VECTOR_DATABASE<ST_NEW_FD_INFO> fdList;
 
-	fdList.pid = strtol(pid.c_str(), NULL, 10);
-	fdList.fdLists = MonitoringManager()->GetFdLists(pid);
+	/*fdList.metaInfo.pid = strtol(pid.c_str(), NULL, 10);*/
+	fdList.metaInfo = MonitoringManager()->GetFdLists(pid);
 
 	std::tstring jsFdList;
 	core::WriteJsonToString(&fdList, jsFdList);
-	//MessageManager()->PushSendMessage(RESPONSE, FD_LIST, jsFdList);
+	MessageManager()->PushSendMessage(RESPONSE, FD_LIST, jsFdList);
 
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Get Process File Descriptor List Complete"));
 #ifdef DEBUG
@@ -56,51 +60,45 @@ void func::StartMonitoring(std::tstring data)
 {
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Monitoring Target Added"));
 
-	ST_MONITOR_LIST monitorList;
-	core::ReadJsonFromString(&monitorList, data);
+	ST_NEW_MONITOR_TARGET monitorTarget;
+	core::ReadJsonFromString(&monitorTarget, data);
 
-	for (auto target : monitorList.targetLists)
-	{ 		
-		core::Log_Debug(TEXT("Function.cpp - [%s] : %s"), TEXT("Monitoring Add Target"), TEXT(target.logPath.c_str()));
-		int result = MonitoringManager()->AddMonitoringTarget(target);
+	core::Log_Debug(TEXT("Function.cpp - [%s] : %s"), TEXT("Monitoring Add Target"), TEXT(monitorTarget.logPath.c_str()));
+	int result = MonitoringManager()->AddMonitoringTarget(monitorTarget);
 
-		ST_MONITOR_RESULT monitorResult;
+	ST_NEW_MONITOR_RESULT monitorResult;
 
-		monitorResult.processName = target.processName;
-		monitorResult.logPath = target.logPath;
-		monitorResult.result = result == 0 ? true : false;
+	monitorResult.processName = monitorTarget.processName;
+	monitorResult.logPath = monitorTarget.logPath;
+	monitorResult.result = result == 0 ? true : false;
 
-		std::tstring jsMessage;
-		core::WriteJsonToString(&monitorResult, jsMessage);
+	std::tstring jsMessage;
+	core::WriteJsonToString(&monitorResult, jsMessage);
 
-		//MessageManager()->PushSendMessage(RESPONSE, MONITOR_RESULT, jsMessage);
-	}
-
+	MessageManager()->PushSendMessage(RESPONSE, MONITORING_RESULT, jsMessage);
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Monitoring Target Added Complete"));
 }
+
 void func::StopMonitoring(std::tstring data)
 {
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Monitoring Target Remove"));
 
-	ST_MONITOR_LIST monitorList;
-	core::ReadJsonFromString(&monitorList, data);
+	ST_NEW_MONITOR_TARGET monitorTarget;
+	core::ReadJsonFromString(&monitorTarget, data);
 
-	for (auto target : monitorList.targetLists)
-	{
-		core::Log_Debug(TEXT("Function.cpp - [%s] : %s"), TEXT("Monitoring Remove Target"), TEXT(target.logPath.c_str()));
-		int result = MonitoringManager()->RemoveMonitoringTarget(target);
+	core::Log_Debug(TEXT("Function.cpp - [%s] : %s"), TEXT("Monitoring Remove Target"), TEXT(monitorTarget.logPath.c_str()));
+	int result = MonitoringManager()->RemoveMonitoringTarget(monitorTarget);
 
-		ST_MONITOR_RESULT monitorResult;
+	ST_NEW_MONITOR_RESULT monitorResult;
 
-		monitorResult.processName = target.processName;
-		monitorResult.logPath = target.logPath;
-		monitorResult.result = result == 0 ? false : true;
+	monitorResult.processName = monitorTarget.processName;
+	monitorResult.logPath = monitorTarget.logPath;
+	monitorResult.result = result == 0 ? false : true;
 
-		std::tstring jsMessage;
-		core::WriteJsonToString(&monitorResult, jsMessage);
+	std::tstring jsMessage;
+	core::WriteJsonToString(&monitorResult, jsMessage);
 
-		//MessageManager()->PushSendMessage(RESPONSE, MONITOR_RESULT, jsMessage);
-	}
+	MessageManager()->PushSendMessage(RESPONSE, MONITORING_RESULT, jsMessage);
 
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Monitoring Target Remove Complete"));
 }
@@ -109,7 +107,7 @@ void func::CollectMonitoringLog(std::tstring processName, std::tstring path, std
 {
 	core::Log_Info(TEXT("Function.cpp - [%s] : %s"), TEXT("Request Monitoring Info"), TEXT(path.c_str()));
 
-	ST_MONITOR_INFO monitorInfo;
+	ST_NEW_MONITOR_INFO monitorInfo;
 
 	monitorInfo.processName = processName;
 	monitorInfo.logPath = path;
@@ -118,7 +116,7 @@ void func::CollectMonitoringLog(std::tstring processName, std::tstring path, std
 	std::tstring jsMonitorInfo;
 	core::WriteJsonToString(&monitorInfo, jsMonitorInfo);
 
-	//MessageManager()->PushSendMessage(RESPONSE, MONITOR_INFO, jsMonitorInfo);
+	MessageManager()->PushSendMessage(RESPONSE, MONITORING_LOG, jsMonitorInfo);
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Request Monitoring Info Complete"));
 }
 
@@ -126,25 +124,24 @@ void func::GetDeviceInfo()
 {
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Device Info"));
 
-	ST_DEVICE_INFO deviceInfo;
+	// 보낼 데이터를 수집하고, 메시지를 만든다.
+	CCollectorManager()->getDeviceInstance()->collectAllData();
+	ST_NEW_DEVICE_INFO sendData = *(CCollectorManager()->getDeviceInstance()->getMetaInfo());
 
-	CDevice* device = new CDevice();
+	ST_NEW_INFO<ST_NEW_DEVICE_INFO> deviceInfo;
 
-	deviceInfo.name = device->getDeviceName();
-	deviceInfo.modelNumber = device->getDeviceModelName();
-	deviceInfo.serialNumber = device->getDeviceSerialNum();
-	deviceInfo.ip = device->getDeviceIpAddr();
-	deviceInfo.mac = device->getDeviceMacAddr();
-	deviceInfo.architecture = device->getDeviceArchitecture();
-	deviceInfo.os = device->getDeviceOS();
+	deviceInfo.serialNumber = "SERIALNUMBER";
+	deviceInfo.timestamp = getNowUnixTime();
+	deviceInfo.metaInfo = sendData;
 
-	free(device);
 	std::tstring jsDeviceInfo;
 	core::WriteJsonToString(&deviceInfo, jsDeviceInfo);
 	
-	//MessageManager()->PushSendMessage(RESPONSE, DEVICE_INFO, jsDeviceInfo);
+	MessageManager()->PushSendMessage(RESPONSE, DEVICE, jsDeviceInfo);
+
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Device Info Complete"));
 }
+
 void func::GetModuleInfo()
 {
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Module Info"));
@@ -202,4 +199,31 @@ void func::GetCheckStatus()
 	//MessageManager()->PushSendMessage(RESPONSE, CHECK_STATE, jsCheckResult);
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Request Checklist Status Complete"));
 
+}
+
+void func::ChangeInterval(std::string data)
+{
+	// 데이터 변환
+
+	ST_INTERVAL_INFO newData;
+
+	core::ReadJsonFromString(&newData, data);
+
+	// 적용
+
+	CCollectorManager()->interval = newData.interval;
+	CCollectorManager()->cancelIntervalBoolean.store(false);
+
+	// 알림
+
+	ST_MESSAGE message;
+
+	message.opcode = CHANGE_INTERVAL;
+	message.status = true;
+	message.data = data;
+
+	std::tstring jsMessage;
+	core::WriteJsonToString(&message, jsMessage);
+
+	MessageManager()->PushSendMessage(RESPONSE, DEVICE, jsMessage);
 }

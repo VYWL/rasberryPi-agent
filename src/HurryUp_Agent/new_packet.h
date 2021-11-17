@@ -15,7 +15,10 @@ enum OPCODE {
     MONITORING_LOG,
     POLICY_RESULT,
     INSPECTION_RESULT,
-    DEVICE_DEAD
+    DEVICE_DEAD,
+    COLLECT_INFO_INTERVAL,
+    COLLECT_DEVICE_INFO,
+    CHANGE_INTERVAL
 };
 
 struct ST_MESSAGE_INFO
@@ -67,6 +70,26 @@ struct ST_NEW_INFO : public core::IFormatterObject
             + core::sPair(TEXT("SerialNumber"), serialNumber)
             + core::sPair(TEXT("TimeStamp"), timestamp)
             + core::sPair(TEXT("MetaInfo"), metaInfo)
+            ;
+    }
+};
+
+template <typename ST_INFO>
+struct ST_NEW_VECTOR_DATABASE : public core::IFormatterObject
+{
+    std::tstring key;
+    std::vector<ST_INFO> metaInfo;
+
+    ST_NEW_VECTOR_DATABASE(void)
+    {}
+    ST_NEW_VECTOR_DATABASE(std::tstring _key, std::vector<ST_INFO> _metaInfo)
+        : key(_key), metaInfo(_metaInfo)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT(key.c_str()), metaInfo)
             ;
     }
 };
@@ -166,7 +189,7 @@ struct ST_NEW_DEVICE_INFO : public core::IFormatterObject
     std::tstring name;
     ST_NEW_OS_INFO osInfo;
     std::tstring modelNumber;
-    std::tstring connectMethod; // ±¸ºÐÀÚ ','
+    std::vector<std::tstring> connectMethod;
     std::vector<ST_NEW_NETWORK_INTERFACE_INFO> networkInfo;
 
     uint32_t moduleCount = 0;
@@ -177,7 +200,7 @@ struct ST_NEW_DEVICE_INFO : public core::IFormatterObject
 
     ST_NEW_DEVICE_INFO(void)
     {}
-    ST_NEW_DEVICE_INFO(std::tstring _name, ST_NEW_OS_INFO _osInfo, std::tstring _modelNumber, std::tstring _connectMethod, std::vector<ST_NEW_NETWORK_INTERFACE_INFO> _networkInfo, uint32_t _moduleCount, std::vector<ST_NEW_SERVICE_INFO> _serviceList)
+    ST_NEW_DEVICE_INFO(std::tstring _name, ST_NEW_OS_INFO _osInfo, std::tstring _modelNumber, std::vector<std::tstring> _connectMethod, std::vector<ST_NEW_NETWORK_INTERFACE_INFO> _networkInfo, uint32_t _moduleCount, std::vector<ST_NEW_SERVICE_INFO> _serviceList)
         : name(_name), osInfo(_osInfo), modelNumber(_modelNumber), connectMethod(_connectMethod), networkInfo(_networkInfo), moduleCount(_moduleCount), serviceList(_serviceList)
     {}
 
@@ -201,7 +224,7 @@ struct ST_NEW_DEVICE_INFO : public core::IFormatterObject
     }
 
     bool operator== (const ST_NEW_DEVICE_INFO& t)
-    {
+    {       
         return this->name == t.name &&
             this->osInfo == t.osInfo &&
             this->modelNumber == t.modelNumber &&
@@ -277,6 +300,120 @@ struct ST_NEW_POLICY_INFO : public core::IFormatterObject
             + core::sPair(TEXT("PolicyDescription"), policyDescription)
             + core::sPair(TEXT("IsFile"), isFile)
             + core::sPair(TEXT("FileData"), fileData)
+            ;
+    }
+};
+
+struct ST_NEW_PROCESS_INFO : public core::IFormatterObject
+{
+    int pid;
+    int ppid;
+    std::tstring name;
+    std::tstring state;
+    std::tstring cmdline;
+    std::tstring startTime;
+
+    ST_NEW_PROCESS_INFO(void)
+    {}
+    ST_NEW_PROCESS_INFO(int _pid, int _ppid, std::tstring _name, std::tstring _state, std::tstring _cmdline, std::tstring _startTime)
+        : pid(_pid), ppid(_ppid), name(_name), state(_state), cmdline(_cmdline), startTime(_startTime)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("Pid"), pid)
+            + core::sPair(TEXT("PPid"), ppid)
+            + core::sPair(TEXT("Name"), name)
+            + core::sPair(TEXT("State"), state)
+            + core::sPair(TEXT("Cmdline"), cmdline)
+            + core::sPair(TEXT("StartTime"), startTime)
+            ;
+    }
+};
+
+struct ST_NEW_FD_INFO : public core::IFormatterObject
+{
+    int pid;
+    std::string fdName;
+    std::string realPath;
+
+    ST_NEW_FD_INFO(void)
+    {}
+    ST_NEW_FD_INFO(int _pid, std::string _fdName, std::string _realPath)
+        : pid(_pid), fdName(_fdName), realPath(_realPath)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("Pid"), pid)
+            + core::sPair(TEXT("FdName"), fdName)
+            + core::sPair(TEXT("ReadPath"), realPath)
+            ;
+    }
+};
+
+struct ST_NEW_MONITOR_TARGET : public core::IFormatterObject
+{
+    std::string processName;
+    std::string logPath;
+
+    ST_NEW_MONITOR_TARGET(void)
+    {}
+    ST_NEW_MONITOR_TARGET(std::string _processName, std::string _logPath)
+        : processName(_processName), logPath(_logPath)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("ProcessName"), processName)
+            + core::sPair(TEXT("LogPath"), logPath)
+            ;
+    }
+};
+
+struct ST_NEW_MONITOR_RESULT : public core::IFormatterObject
+{
+    std::string processName;
+    std::tstring logPath;
+    bool result;
+
+    ST_NEW_MONITOR_RESULT(void)
+    {}
+    ST_NEW_MONITOR_RESULT(std::string _processName, std::tstring _logPath, bool _result)
+        : processName(_processName), logPath(_logPath), result(_result)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("ProcessName"), processName)
+            + core::sPair(TEXT("LogPath"), logPath)
+            + core::sPair(TEXT("Result"), result)
+            ;
+    }
+};
+
+struct ST_NEW_MONITOR_INFO : public core::IFormatterObject
+{
+    std::string processName;
+    std::string logPath;
+    std::string changeData;
+
+    ST_NEW_MONITOR_INFO(void)
+    {}
+    ST_NEW_MONITOR_INFO(std::string _processName, std::string _logPath, std::string _changeData)
+        : processName(_processName), logPath(_logPath), changeData(_changeData)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("ProcessName"), processName)
+            + core::sPair(TEXT("LogPath"), logPath)
+            + core::sPair(TEXT("ChangeData"), changeData)
             ;
     }
 };

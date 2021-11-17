@@ -43,12 +43,12 @@ private:
 	std::tstring Trim(const std::tstring& s);
 public:
 	static CMonitoring* GetInstance(void);
-	int AddMonitoringTarget(ST_MONITOR_TARGET target);
-	int RemoveMonitoringTarget(ST_MONITOR_TARGET target);
+	int AddMonitoringTarget(ST_NEW_MONITOR_TARGET target);
+	int RemoveMonitoringTarget(ST_NEW_MONITOR_TARGET target);
 	void StartMonitoring();
 	void EndMonitoring();
-	std::vector<ST_PROCESS_INFO> GetProcessLists();
-	std::vector<ST_FD_INFO> GetFdLists(std::tstring pid);
+	std::vector<ST_NEW_PROCESS_INFO> GetProcessLists();
+	std::vector<ST_NEW_FD_INFO> GetFdLists(std::tstring pid);
 };
 
 inline CMonitoring* MonitoringManager()
