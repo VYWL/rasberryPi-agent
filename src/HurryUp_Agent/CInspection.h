@@ -5,11 +5,11 @@
 // TODO :: 성공 그리고 실패 코드 추가(매크로)
 struct ST_STAGE_INFO
 {
-	// FILE* executableFile;
+	uint32_t isFail;
 	uint32_t nowStage;
+	std::string filePath;
 	std::string stageDescription;
 	std::string timestamp;
-	uint32_t isFail;
 };
 
 struct ST_INSPECTION_INFO
@@ -28,19 +28,20 @@ class CInspection
 {
 private:
 	// TODO :: queue가 Thread safe 한지 알아봐야한다. 아니라고 한다....
+	ST_INSPECTION_INFO*				nowTask;
 	std::queue<ST_INSPECTION_INFO*> taskQueue;
+	std::mutex						taskQueueMutex;
 
 public:
-	static ST_INSPECTION_INFO* nowTask;
 	
 	CInspection(void);
 	~CInspection(void);
 
-	void clearTaskQueue(void);
-	uint32_t getTaskQueueLength(void);
+	void				clearTaskQueue(void);
+	int					getTaskQueueLength(void);
 	ST_INSPECTION_INFO* getNowTaskInfo(void);
 	
 	// TODO :: Message로부터 받은 정보를 가공하여 Queue에 추가. => 아직 인자의 자료형 void라 수정필요
-	static void addTask(void);
-	static void execTask(void);
+	void addTask(std::string);
+	void execTask(void);
 };

@@ -14,4 +14,5 @@ namespace func
 	void InactivatePolicy(std::string data);
 	void ActivateCheck(std::string data);
 	void GetCheckStatus();
+	void ChangeInterval(std::string data);
 }

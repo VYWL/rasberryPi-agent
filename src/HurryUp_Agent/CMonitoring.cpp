@@ -21,26 +21,27 @@ CMonitoring::~CMonitoring()
 
 std::tstring CMonitoring::GetDirectoryPath(std::tstring logPath)
 {
-	std::filesystem::path path(logPath);
+	
+	std::tstring parentPath = core::ExtractDirectory(logPath);
 
-	if (std::filesystem::exists(path.parent_path()))
-		return path.parent_path();
+	if (core::PathFileExistsA(parentPath.c_str()))
+		return parentPath;
 	else
 	{
-		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("Directory Path Not Exists"), TEXT(path.parent_path().c_str()));
+		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("Directory Path Not Exists"), TEXT(parentPath.c_str()));
 		return "";
 	}
 }
 
 std::tstring CMonitoring::GetFilename(std::tstring logPath)
 {
-	std::filesystem::path path(logPath);
+	std::tstring fileName = core::ExtractFileName(logPath);
 
-	if (std::filesystem::exists(path))
-		return path.filename();
+	if (core::PathFileExistsA(fileName.c_str()))
+		return fileName;
 	else
 	{
-		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("File Not Exists"), TEXT(path.filename().c_str()));
+		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("File Not Exists"), TEXT(fileName.c_str()));
 		return "";
 	}
 }
@@ -77,23 +78,13 @@ int CMonitoring::FindFileEndPosition(std::ifstream& fileFd) {
 	}
 }
 
-int CMonitoring::AddMonitoringTarget(ST_MONITOR_TARGET target)
+int CMonitoring::AddMonitoringTarget(ST_NEW_MONITOR_TARGET target)
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Start"), TEXT(target.logPath.c_str()));
 
 	sleep(0);
 	std::lock_guard<std::mutex> lock_guard(monitoringMutex);
-	std::tstring originalPath = "";
-
-	try
-	{
-		originalPath = std::filesystem::canonical(target.logPath);
-	}
-	catch (const std::exception& ex)
-	{
-		core::Log_Error(TEXT("CMonitoring.cpp - [%s] : %s - %s"), TEXT("Log Path Not Exisit"), TEXT(target.logPath.c_str()), ex.what());
-		return -1;
-	}
+	std::tstring originalPath = target.logPath;
 
 	std::tstring directoryPath = GetDirectoryPath(originalPath);
 	std::tstring fileName = GetFilename(originalPath);
@@ -147,23 +138,13 @@ int CMonitoring::AddMonitoringTarget(ST_MONITOR_TARGET target)
 	core::Log_Info(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Add Complete"), TEXT(target.logPath.c_str()));
 	return 0;
 }
-int CMonitoring::RemoveMonitoringTarget(ST_MONITOR_TARGET target)
+int CMonitoring::RemoveMonitoringTarget(ST_NEW_MONITOR_TARGET target)
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("MonitoringTarget Remove Start"), TEXT(target.logPath.c_str()));
 	sleep(0);
 	std::lock_guard<std::mutex> lock_guard(monitoringMutex);
 
-	std::tstring originalPath = "";
-
-	try
-	{
-		originalPath = std::filesystem::canonical(target.logPath);
-	}
-	catch (const std::exception& ex)
-	{
-		core::Log_Error(TEXT("CMonitoring.cpp - [%s] : %s - %s"), TEXT("Log Path Not Exisit"), TEXT(target.logPath.c_str()), ex.what());
-		return -1;
-	}
+	std::tstring originalPath = target.logPath;
 
 	std::tstring directoryPath = GetDirectoryPath(originalPath);
 	std::tstring fileName = GetFilename(originalPath);
@@ -296,82 +277,121 @@ void CMonitoring::EndMonitoring()
 	terminate = true;
 }
 
-std::vector<ST_PROCESS_INFO> CMonitoring::GetProcessLists()
+std::vector<ST_NEW_PROCESS_INFO> CMonitoring::GetProcessLists()
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Get ProcessList Start"));
 
 	std::tstring path = TEXT("/proc");
-	std::vector<ST_PROCESS_INFO> processLists;
+	std::vector<ST_NEW_PROCESS_INFO> processLists;
 
 	int i = 0;
-	for (auto& p : std::filesystem::directory_iterator(path)) {
-		if (strtol(p.path().filename().c_str(), NULL, 10) > 0) {
-			ST_PROCESS_INFO pinfo;
-			std::ifstream status(p.path().string() + "/status");
+
+	DIR* dir = opendir(path.c_str());
+	if (dir == NULL)
+	{
+		core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Directory Open Fail"));
+		return processLists;
+	}
+
+	struct dirent* de = NULL;
+
+	while ((de = readdir(dir)) != NULL)
+	{
+		if (strtol(de->d_name, NULL, 10) > 0) {
+			ST_NEW_PROCESS_INFO pinfo;
+			std::tstring next;
+
+			std::tstring path("/proc/" + TEXT(std::string(de->d_name)));
+			std::ifstream status(path + "/status");
 			std::tstring buffer;
 
 			while (buffer.find("Name:") == std::tstring::npos)
 				std::getline(status, buffer);
-			pinfo.name = Trim(ColumnSplit(buffer, ":"));
+			core::Split(buffer, ":", &next);
+			pinfo.name = core::Trim(next.c_str(), " \t");
 
 			while (buffer.find("State:") == std::tstring::npos)
 				std::getline(status, buffer);
-			pinfo.state = Trim(ColumnSplit(buffer, ":"));
+			core::Split(buffer, ":", &next);
+			pinfo.state = core::Trim(next.c_str(), " \t");
 
 			while (buffer.find("Pid:") == std::tstring::npos)
 				std::getline(status, buffer);
-			pinfo.pid = strtol(Trim(ColumnSplit(buffer, ":")).c_str(), NULL, 10);
+			core::Split(buffer, ":", &next);
+			pinfo.pid = strtol(core::Trim(next.c_str(), " \t").c_str(), NULL, 10);
 
 			while (buffer.find("PPid:") == std::tstring::npos)
 				std::getline(status, buffer);
-			pinfo.ppid = strtol(Trim(ColumnSplit(buffer, ":")).c_str(), NULL, 10);
+			core::Split(buffer, ":", &next);
+			pinfo.ppid = strtol(core::Trim(next.c_str(), " \t").c_str(), NULL, 10);
 
 			status.close();
 
-			std::ifstream cmdLine(p.path().string() + "/cmdline");
+			std::ifstream cmdLine(path + "/cmdline");
 			std::getline(cmdLine, buffer);
-			pinfo.cmdline = Trim(buffer).c_str();
+			pinfo.cmdline = core::Trim(buffer.c_str(), " \t").c_str();
 			cmdLine.close();
 
-			std::ifstream timeInfo(p.path().string() + "/sched");
+			std::ifstream timeInfo(path + "/sched");
 
 			while (buffer.find("se.exec_start") == std::tstring::npos)
 				std::getline(timeInfo, buffer);
 			timeInfo.close();
 
-			time_t curr_time = strtol(Trim(ColumnSplit(buffer, ":")).c_str(), NULL, 10);
+			core::Split(buffer, ":", &next);
+			time_t curr_time = strtol(core::Trim(next.c_str(), " \t").c_str(), NULL, 10);
 			pinfo.startTime = std::asctime(std::localtime(&curr_time));
 
 			i++;
 			processLists.push_back(pinfo);
 		}
 	}
+
+	closedir(dir);
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessList End"), i);
 	return processLists;
 }
 
-std::vector<ST_FD_INFO> CMonitoring::GetFdLists(std::tstring pid)
+std::vector<ST_NEW_FD_INFO> CMonitoring::GetFdLists(std::tstring pid)
 {
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Get ProcessFileDescriptorList Start"));
 
 	std::tstring path = TEXT("/proc/") + TEXT(pid) + TEXT("/fd");
-	std::vector<ST_FD_INFO> fdLists;
+	std::vector<ST_NEW_FD_INFO> fdLists;
 
-	if (!std::filesystem::exists(path)) {
+	if (!core::PathFileExistsA(path.c_str())){
 		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("Process Is Not Valid."), TEXT(path.c_str()));
 		return fdLists;
 	}
 
 	int i = 0;
-	for (auto& p : std::filesystem::directory_iterator(path)) {
-		ST_FD_INFO pinfo;
+	DIR* dir = opendir(path.c_str());
+	
+	if (dir == NULL)
+	{
+		core::Log_Debug(TEXT("CMonitoring.cpp - [%s]"), TEXT("Directory Open Fail"));
+		return fdLists;
+	}
+
+	struct dirent* de = NULL;
+
+	while ((de = readdir(dir)) != NULL)
+	{
+		char buf[1024];
+		ST_NEW_FD_INFO pinfo;
+		std::tstring linkPath = TEXT(path) + TEXT("/") + TEXT(de->d_name);
+
+		int length = readlink(linkPath.c_str(), buf, sizeof(buf));
+		buf[length] = '\0';
+
 		pinfo.pid = strtol(pid.c_str(), NULL, 10);
-		pinfo.fdName = p.path().string().c_str();
-		pinfo.realPath = std::filesystem::read_symlink(p).string().c_str();
+		pinfo.fdName = de->d_name;
+		pinfo.realPath = buf;
 
 		fdLists.push_back(pinfo);
 		i++;
 	}
+
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessFileDescriptorList Start"), i);
 	return fdLists;
 }

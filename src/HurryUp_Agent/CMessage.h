@@ -2,8 +2,6 @@
 #include "stdafx.h"
 #include <queue>
 #include <protocol.h>
-#include <mutex>
-#include <future>
 
 class CMessage
 {
@@ -24,7 +22,7 @@ public:
 	static CMessage* GetInstance(void);
 	void Init();
 	void PushReceiveMessage(ST_PACKET_INFO* stPacketInfo);	//수신 메시지를 수신 메시지큐에 저장하는 기능
-	void PushSendMessage(PacketType type, PacketOpcode opcode, std::tstring message);	//송신 메시지를 송신 메시지큐에 저장하는 기능
+	void PushSendMessage(PacketType type, OPCODE opcode, std::tstring message);	//송신 메시지를 송신 메시지큐에 저장하는 기능
 };
 
 inline CMessage* MessageManager()

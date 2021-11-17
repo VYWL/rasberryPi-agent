@@ -1,59 +1,43 @@
+/*
 #include "CInfo.h"
 #include "utils.h"
 
-// Global Variables - none
-
-// Constructor & destructor
-
-CInfo::CInfo(void) 
+// Constructor
+template <typename ST_INFO>
+CInfo<ST_INFO>::CInfo(void)
 {
-	this->serialNumber				= "1234";
-	this->deviceInfo				= new ST_DEVICE_INFO_;
-	this->deviceInfo->name			= "DName";
-	this->deviceInfo->osName		= "OsName";
-	this->deviceInfo->modelNumber	= "1234";
-	this->deviceInfo->location		= "location";
-	this->deviceInfo->category		= "category";
-	this->timestamp					= getNowUnixTime();
-	this->connectMethod				= "connectionMethod";
-};
+	this->serialNumber	= "0000";
+	this->metaInfo		= new ST_INFO;
+	this->timestamp		= getNowUnixTime();
+}
 
-CInfo::~CInfo(void) 
+template <typename ST_INFO>
+CInfo<ST_INFO>::~CInfo(void)
 {
-	delete (this->deviceInfo);
-};
-
-// Static functions - none
+	delete (this->metaInfo);
+}
 
 // Getter
 
-std::string	CInfo::getSerialNumber(void)	{ this->refreshTimeStamp(); return this->serialNumber; }
-std::string	CInfo::getLastModifiedTime(void){ this->refreshTimeStamp(); return this->timestamp; }
-std::string	CInfo::getConnectionInfo(void)	{ this->refreshTimeStamp(); return this->connectMethod; }
-std::string	CInfo::getDeviceInfo(int _property) 
-{
-	this->refreshTimeStamp();
+template <typename ST_INFO>
+std::string	CInfo<ST_INFO>::getLastModifiedTime(void)	{ return this->timestamp; }
 
-	switch (_property) {
-		case D_NAME:		return this->deviceInfo->name;
-		case D_OSNAME:		return this->deviceInfo->osName;
-		case D_MODELNUM:	return this->deviceInfo->modelNumber;
-		case D_LOCATION:	return this->deviceInfo->location;
-		case D_CATEGORY:	return this->deviceInfo->category;
-	}
-}
-ST_DEVICE_INFO_* CInfo::getDeviceInfo(void) { this->refreshTimeStamp(); return this->deviceInfo; }
+template <typename ST_INFO>
+std::string	CInfo<ST_INFO>::getSerialNumber(void)		{ return this->serialNumber; }
+
+template <typename ST_INFO>
+ST_INFO* CInfo<ST_INFO>::getMetaInfo(void)				{ return this->metaInfo; }
 
 // Setter
 
-void CInfo::setName(std::string _name)				{ this->deviceInfo->name			= _name; }
-void CInfo::setOsName(std::string _osName)			{ this->deviceInfo->osName			= _osName; }
-void CInfo::setLocation(std::string _name)			{ this->deviceInfo->name			= _name; }
-void CInfo::setCategory(std::string _category)		{ this->deviceInfo->category		= _category; }
-void CInfo::setModelNumber(std::string _num)		{ this->deviceInfo->modelNumber		= _num; }
-void CInfo::setSerialNumber(std::string _num)		{ this->serialNumber				= _num; }
-void CInfo::setDeviceInfo(ST_DEVICE_INFO_& _info)	{ *this->deviceInfo					= _info; }
+template <typename ST_INFO>
+void CInfo<ST_INFO>::setSerialNumber(std::string _num)	{ this->refreshTimeStamp(); this->serialNumber = _num; }
 
-// Other functions
+template <typename ST_INFO>
+void CInfo<ST_INFO>::setMetaInfo(ST_INFO& _info)		{ this->refreshTimeStamp(); *this->deviceInfo = _info; }
 
-void CInfo::refreshTimeStamp(void) { this->timestamp = getNowUnixTime(); }
+// Other Functions
+
+template <typename ST_INFO>
+void CInfo<ST_INFO>::refreshTimeStamp(void)				{ this->timestamp = getNowUnixTime(); }
+*/

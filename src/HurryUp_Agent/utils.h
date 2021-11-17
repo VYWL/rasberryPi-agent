@@ -1,10 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "CInfo.h"
-
-// Struct 
-
-
 // NetInfo => ifaddr (1¹ø ¹æ½Ä)
 #include <ifaddrs.h>
 #include <linux/if_link.h>      
@@ -26,20 +21,6 @@ std::string getNowUnixTime(void);
 std::vector<std::string> split(std::string, char);
 std::string trim(const std::string&);
 
-
-// TEST
-void Debug_CInfo(CInfo *);
-
-void osInfoGather_1();
-void osInfoGather_2();
-void osInfoGather_3();
-
-void networkInfoGather_1();
-void networkInfoGather_2();
-void networkInfoGather_3();
-
-void serviceInfoGather_1();
-void serviceInfoGather_2();
 
 // Log or Terminal
 std::string SendToTerminal(const char *);

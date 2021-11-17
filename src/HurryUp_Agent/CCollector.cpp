@@ -1,16 +1,15 @@
 #include "CCollector.h"
+#include "CTcpClient.h"
+#include "CMessage.h"
+#include "Function.h"
 
-// Global Variables - none
-
-// Static functions - none
-
-// Constructor & destructor
-
-CCollector::CCollector(void)
+CCollector::CCollector(void) 
 {
 	// TODO :: 디바이스 이름 및 시리얼 넘버 등의 정보는 수집이 되는게 아님 => 설정필요.
-	this->device = new CDevice;
+	this->device = new CDevice_;
 	this->device->collectAllData();
+
+	this->interval = 1000 * 60 * 5;
 }
 
 CCollector::~CCollector(void)
@@ -18,54 +17,148 @@ CCollector::~CCollector(void)
 	delete (this->device);
 }
 
+// Constructor
+
+CCollector* CCollector::getInstance(void)
+{
+	static CCollector instance;
+	return &instance;
+}
+
 // Getter
 
-CDevice*		CCollector::getDeviceInstance(void)
+CDevice_*		CCollector::getDeviceInstance(void)
 {
-	// 가지고있는 this->Device를 리턴한다.
+	return this->device;
 }
 
-CModule*		CCollector::getModuleInstance(int _idx)
+// 모듈 리스트중, 임의의 인덱스에 해당하는 모듈 객체를 반환
+// 인덱스가 범위를 벗어나는 경우 Null
+CModule* CCollector::getModuleInstance(int _idx)
 {
-	// 모듈 리스트중, 임의의 인덱스에 해당하는 모듈 객체를 반환
-	// 인덱스가 범위를 벗어나는 경우 Null
+	if (_idx < 0 || _idx >= this->moduleList.size()) return NULL;
+
+	return this->moduleList[_idx];
 }
 
-std::string		CCollector::getModuleListInfo(void)
+CModule* CCollector::getModuleInstance(std::string _mSerial)
 {
-	// 전체 모듈 리스트 관련 정보를 반환한다. => 어떤거 반환할지 정하기
-	// 대신 임의의 정보를 담아서 반환 => sstream 사용해서 문자열로 반환
+	for (auto _m : this->moduleList)
+		if (_m->getSerialNumber() == _mSerial) return _m;
+
+	return NULL;
 }
 
+std::vector<CModule*> CCollector::getModuleListInfo(void)
+{
+	return this->moduleList;
+}
 
 // Setter
 
-void CCollector::addModule(const CModule &)
+void CCollector::addModule(CModule* _addT)
 {
-	// 모듈 리스트에 모듈을 추가하는 과정이다.
-	// 모듈이 발견되지 않았을 경우 혹은 자동등록 과정중에 호출된다.
+	// 유효성 검증
+	auto isValid = isValidModuleData(_addT);
+
+	// TODO : 찾지 못했다는 로그 남기기
+	if (!isValid) return;
+
+	// 기존 추가한 놈인지 check
+
+	auto hasModule = this->getModuleInstance(_addT->getSerialNumber());
+
+	// TODO : 찾지 못했다는 로그 남기기
+	if (hasModule) return;
+
+	// 없는놈임 => 추가
+
+	this->moduleList.push_back(_addT);
+
+	// TODO :: 서버에 정보 업데이트
+
 }
 
-CModule CCollector::deleteModule(int)
+void CCollector::deleteModule(int _idx)
 {
 	// 모듈 리스트의 특정 인덱스의 모듈 객체를 메모리 해제하고 리스트에서 제거한다.
-	// 제거 후 지운 객체 정보를 반환한다. (미리 복사해 두어야 겠지?)
+
+	// 1. 주소값 가져오기
+
+	auto removedModule = this->moduleList[_idx];
+
+	// 2. 리스트 상에서 삭제
+
+	this->moduleList.erase(this->moduleList.begin() + _idx);
+
+	// 3. free
+
+	delete (removedModule);
+
+	return;
 }
 
-// Other functions
+void CCollector::deleteModule(std::string _mSerial)
+{
+	// 모듈 리스트의 특정 인덱스의 모듈 객체를 메모리 해제하고 리스트에서 제거한다.
+
+	// 0. find
+
+	auto removedModule = this->getModuleInstance(_mSerial);
+
+	// TODO : 찾지 못했다는 로그 남기기
+	if (!removedModule) return;
+
+	// 1. memory free
+
+	delete (removedModule);
+
+	return;
+}
 
 void CCollector::refreshDeviceInfo(void)
 {
-	// 장치 정보를 한번 갱신한다.
 	this->device->collectAllData();
 }
 
 void CCollector::refreshModuleList(void)
 {
 	// 전체 모듈을 전부 한번씩 갱신한다.
+	for (auto _m : this->moduleList)
+	{
+		_m->checkStatus();
+	}
 }
 
-void CCollector::refreshModuleInfo(int)
+void CCollector::refreshModuleInfo(int _idx)
 {
-	// 특정 인덱스의 모듈 정보를 한번 갱신한다.
+	// TODO : 범위 밖이라는 로그 남기기 => 함수화
+	if (_idx < 0 || _idx >= this->moduleList.size()) return;
+
+	this->moduleList[_idx]->checkStatus();
+}
+
+// Interval
+
+void CCollector::init()
+{
+	std::future<void> dataCollector = std::async(std::launch::async, &CCollector::startInterval, CCollectorManager());
+}
+
+void CCollector::startInterval()
+{
+	while(1)
+	{
+		setInterval(this->cancelIntervalBoolean, this->interval, func::GetDeviceInfo);
+
+		// TODO :: Log 남기는 로직
+	}
+}
+
+int isValidModuleData(CModule* _t)
+{
+	if(_t->getPinNum() == 0)			return NO_PINNUM;
+	if(_t->getConnectionType() == 0)	return NO_CONNECTTION_TYPE;
+
+	return VAILD;
 }
