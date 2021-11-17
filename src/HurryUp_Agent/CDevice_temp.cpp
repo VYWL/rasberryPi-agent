@@ -10,7 +10,7 @@ void Debug_CDevice(CDevice_* tmp)
 	//std::cout << ":: metaInfo->osName = " << tmp_dinfo->osName << '\n';
 	std::cout << ":: metaInfo->modelNumber = " << tmp_dinfo->modelNumber << '\n';
 	std::cout << ":: timestamp = " << tmp->getLastModifiedTime() << '\n';
-	std::cout << ":: connectionInfo = " << tmp->getConnectionInfo() << '\n';
+	//std::cout << ":: connectionInfo = " << tmp->getConnectionInfo() << '\n';
 }
 
 /*

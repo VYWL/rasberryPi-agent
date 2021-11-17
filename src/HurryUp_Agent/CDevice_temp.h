@@ -100,7 +100,7 @@ struct ST_DEVICE_INFO_ : public core::IFormatterObject
 	std::string name;
 	ST_OS_INFO	osInfo;
 	std::string modelNumber;
-	std::string connectMethod; // 구분자 ','
+	std::vector<std::string> connectMethod;
 	std::vector<ST_NETWORK_INTERFACE_INFO> networkInfo;
 
 	uint32_t moduleCount = 0;
@@ -161,15 +161,16 @@ public:
 
 	CDevice_(void)
 	{
+
 		this->metaInfo						= new ST_DEVICE_INFO_;
 		this->metaInfo->name				= "DName";
 		this->metaInfo->osInfo.osName		= "OsName";
 		this->metaInfo->osInfo.osRelease	= "OsRelease";
 		this->metaInfo->modelNumber			= "1234";
-		this->metaInfo->connectMethod		= "NONE";
 		this->metaInfo->moduleCount			= 0;
 		this->metaInfo->networkInfo.clear();
 		this->metaInfo->serviceList.clear();
+		this->metaInfo->connectMethod.clear();
 	}
 
 	~CDevice_(void)
@@ -186,7 +187,8 @@ public:
 	std::string getOsName(void)				{ return this->metaInfo->osInfo.osName; }
 	std::string getOsRelease(void)			{ return this->metaInfo->osInfo.osRelease; }
 	std::string getModelNumber(void)		{ return this->metaInfo->modelNumber; }
-	std::string	getConnectionInfo(void)		{ return this->metaInfo->connectMethod; } // 반환 형식 달라질 가능성 존재 (Property 때문에)
+	std::vector<std::string>	
+				getConnectionInfo(void)		{ return this->metaInfo->connectMethod; } // 반환 형식 달라질 가능성 존재 (Property 때문에)
 	std::vector<ST_NETWORK_INTERFACE_INFO>
 				getNetworkInfo(void)		{ return this->metaInfo->networkInfo; }
 	std::vector<ST_SERVICE_INFO>
@@ -212,7 +214,6 @@ public:
 
 		this->metaInfo->networkInfo.push_back(_nInfo);
 	}
-
 
 	void addServiceInfo(ST_SERVICE_INFO& _sInfo)
 	{
@@ -262,6 +263,15 @@ public:
 
 	void collectNetworkInfo(void)
 	{
+		// Connection Method => pinout 커맨드 이용
+		// 일단은 임시로 Wifi + Bluetooth만 조사 => 추후 추가예정
+		std::string temp = exec("sudo pinout | grep -e \"Wi - fi\" -e \"Bluetooth\" | awk \'{print $1}\'");
+		std::cout <<":: size :: " << temp.length() << '\n';
+
+		std::vector<std::string> methods = split(temp, '\n');
+
+		this->metaInfo->connectMethod = methods;
+
 		// API version => 함수 새로 구현
 		// Command version => ifconfig, ip addr 관련 => 기존 함수 사용
 		// File version	 => /sys/class/net 사용
