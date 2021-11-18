@@ -18,7 +18,7 @@ void func::GetProcessList()
 	MessageManager()->PushSendMessage(RESPONSE, PROCESS_LIST, jsProcessList);
 
 	for (auto pInfo : processList.metaInfo) {
-		GetFileDescriptorList(std::to_string(pInfo.pid));
+		//GetFileDescriptorList(std::to_string(pInfo.pid));
 		core::Log_Debug(TEXT("========================================"));
 		core::Log_Debug(TEXT("Function.cpp - [pid] : %d"), pInfo.pid);
 		core::Log_Debug(TEXT("Function.cpp - [ppid] : %d"), pInfo.ppid);
@@ -36,7 +36,7 @@ void func::GetFileDescriptorList(std::tstring pid)
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Get Process File Descriptor List"));
 	
 	ST_NEW_VECTOR_DATABASE<ST_NEW_FD_INFO> fdList;
-
+	fdList.key = TEXT("MetaInfo");
 	/*fdList.metaInfo.pid = strtol(pid.c_str(), NULL, 10);*/
 	fdList.metaInfo = MonitoringManager()->GetFdLists(pid);
 
