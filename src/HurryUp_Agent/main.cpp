@@ -85,19 +85,6 @@ int main(int argc, char *argv[]) {
 	CCollectorManager()->startInterval();
 	MessageManager()->Init();*/
 
-	//std::cout << ::access("/dev/kmsg", F_OK) << std::endl;
-	//std::cout << ::access("/dev", F_OK) << std::endl;
-
-
-	//std::cout << core::PathFileExistsA("/dev/kmsg") << std::endl;
-	//std::cout << core::PathFileExistsA("/dev") << std::endl;
-
-	//std::tstring buffer;
-	//std::ifstream status("/dev/kmsg");
-	//std::getline(status, buffer);
-
-	//std::cout << buffer << std:: 
-
 	return 0;
 }
 
