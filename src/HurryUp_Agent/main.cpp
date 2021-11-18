@@ -11,6 +11,11 @@
 ST_ENV env;
 int main(int argc, char *argv[]) {
 
+	env.ip = argv[1];
+	env.port = argv[2];
+	env.loggerName = argv[3];
+	env.serialNumber = argv[4];
+
 	// :: PID TEST::
     // pid_t pid = GetPIDbyName("bash"); // If -1 = not found, if -2 = proc fs access error
     // printf("PID %d\n", pid);
@@ -79,6 +84,20 @@ int main(int argc, char *argv[]) {
 
 	CCollectorManager()->startInterval();
 	MessageManager()->Init();*/
+
+	//std::cout << ::access("/dev/kmsg", F_OK) << std::endl;
+	//std::cout << ::access("/dev", F_OK) << std::endl;
+
+
+	//std::cout << core::PathFileExistsA("/dev/kmsg") << std::endl;
+	//std::cout << core::PathFileExistsA("/dev") << std::endl;
+
+	//std::tstring buffer;
+	//std::ifstream status("/dev/kmsg");
+	//std::getline(status, buffer);
+
+	//std::cout << buffer << std:: 
+
 	return 0;
 }
 

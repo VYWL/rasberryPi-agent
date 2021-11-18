@@ -98,9 +98,32 @@
     <RemoteIntRelDir>$(RemoteProjectRelDir)/Output/$(configuration)$(platform)/$(projectName)</RemoteIntRelDir>
     <RemoteOutRelDir>$(RemoteProjectRelDir)/Build/$(configuration)$(platform)</RemoteOutRelDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <OutDir>$(SolutionDir)..\Build\$(configuration)$(platform)</OutDir>
+    <IntDir>$(SolutionDir)..\Output\$(configuration)$(platform)\$(projectName)</IntDir>
+    <RemoteIntRelDir>$(RemoteProjectRelDir)/Output/$(configuration)$(platform)/$(projectName)</RemoteIntRelDir>
+    <RemoteOutRelDir>$(RemoteProjectRelDir)/Build/$(configuration)$(platform)</RemoteOutRelDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <OutDir>$(SolutionDir)..\Build\$(configuration)$(platform)</OutDir>
+    <IntDir>$(SolutionDir)..\Output\$(configuration)$(platform)\$(projectName)</IntDir>
+    <RemoteIntRelDir>$(RemoteProjectRelDir)/Output/$(configuration)$(platform)/$(projectName)</RemoteIntRelDir>
+    <RemoteOutRelDir>$(RemoteProjectRelDir)/Build/$(configuration)$(platform)</RemoteOutRelDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)..\Build\$(configuration)$(platform)</OutDir>
+    <IntDir>$(SolutionDir)..\Output\$(configuration)$(platform)\$(projectName)</IntDir>
+    <RemoteIntRelDir>$(RemoteProjectRelDir)/Output/$(configuration)$(platform)/$(projectName)</RemoteIntRelDir>
+    <RemoteOutRelDir>$(RemoteProjectRelDir)/Build/$(configuration)$(platform)</RemoteOutRelDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <OutDir>$(SolutionDir)..\Build\$(configuration)$(platform)</OutDir>
+    <IntDir>$(SolutionDir)..\Output\$(configuration)$(platform)\$(projectName)</IntDir>
+    <RemoteIntRelDir>$(RemoteProjectRelDir)/Output/$(configuration)$(platform)/$(projectName)</RemoteIntRelDir>
+    <RemoteOutRelDir>$(RemoteProjectRelDir)/Build/$(configuration)$(platform)</RemoteOutRelDir>
+  </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="CCollector.cpp" />
-    <ClCompile Include="CDevice.cpp" />
     <ClCompile Include="CDevice_temp.cpp" />
     <ClCompile Include="CExecutor.cpp" />
     <ClCompile Include="CInfo.cpp" />
@@ -116,7 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCollector.h" />
-    <ClInclude Include="CDevice.h" />
     <ClInclude Include="CDevice_temp.h" />
     <ClInclude Include="CExecutor.h" />
     <ClInclude Include="CInfo.h" />
@@ -166,6 +188,38 @@
       <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
       <CppLanguageStandard>c++14</CppLanguageStandard>
     </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>cppcore;%(LibraryDependencies);dl;pthread</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>cppcore;%(LibraryDependencies);dl;pthread</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>cppcore;%(LibraryDependencies);dl;pthread</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(ClCompile.AdditionalIncludeDirectories);$(SolutionDir)..\Inc;$(RemoteRootDir)/../BoB10_SEDR/$(projectName)/Inc</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>cppcore;%(LibraryDependencies);dl;pthread</LibraryDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

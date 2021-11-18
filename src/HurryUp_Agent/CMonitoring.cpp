@@ -258,7 +258,7 @@ void CMonitoring::StartMonitoring()
 							core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s, %d -> %d"), TEXT("File Size"), TEXT(fullPath.c_str()), re_size, size);
 							core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %s, %s"), TEXT("FileModify Content"), TEXT(fullPath.c_str()), TEXT(message.c_str()));
 
-							func::CollectMonitoringLog(monitoringEvent->processName, fullPath, message);
+							func::CollectMonitoringLog(monitoringEvent->processName, fullPath, core::Trim(message, "\n"));
 						}
 					}
 				}

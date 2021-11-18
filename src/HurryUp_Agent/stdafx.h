@@ -49,6 +49,7 @@ struct ST_ENV
 	std::tstring ip;
 	std::tstring port;
 	std::tstring loggerName;
+	std::tstring serialNumber;
 };
 
 template<typename ... Args>
