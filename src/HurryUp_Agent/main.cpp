@@ -11,6 +11,11 @@
 ST_ENV env;
 int main(int argc, char *argv[]) {
 
+	env.ip = argv[1];
+	env.port = argv[2];
+	env.loggerName = argv[3];
+	env.serialNumber = argv[4];
+
 	// :: PID TEST::
     // pid_t pid = GetPIDbyName("bash"); // If -1 = not found, if -2 = proc fs access error
     // printf("PID %d\n", pid);
@@ -79,6 +84,7 @@ int main(int argc, char *argv[]) {
 
 	CCollectorManager()->startInterval();
 	MessageManager()->Init();*/
+
 	return 0;
 }
 

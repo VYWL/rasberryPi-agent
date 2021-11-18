@@ -5,6 +5,8 @@
 #include "CCollector.h"
 #include "utils.h"
 
+extern ST_ENV env;
+
 void func::GetProcessList()
 {
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Get Process List"));
@@ -130,7 +132,7 @@ void func::GetDeviceInfo()
 
 	ST_NEW_INFO<ST_NEW_DEVICE_INFO> deviceInfo;
 
-	deviceInfo.serialNumber = "SERIALNUMBER";
+	deviceInfo.serialNumber = env.serialNumber;
 	deviceInfo.timestamp = getNowUnixTime();
 	deviceInfo.metaInfo = sendData;
 
@@ -147,15 +149,6 @@ void func::GetModuleInfo()
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Module Info"));
 	ST_MODULE_INFO moduleInfo;
 
-	CDevice* device = new CDevice();
-	moduleInfo.deviceSerialNumber = device->getDeviceSerialNum();
-	moduleInfo.deviceMac = device->getDeviceMacAddr();
-	moduleInfo.name = "test";
-	moduleInfo.modelNumber = "MD-1234";
-	moduleInfo.serialNumber = "SN-1234-1234";
-	moduleInfo.mac = "11:22:33:44:55:66";
-
-	free(device);
 	std::tstring jsModuleInfo;
 	core::WriteJsonToString(&moduleInfo, jsModuleInfo);
 

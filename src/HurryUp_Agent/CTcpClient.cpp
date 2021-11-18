@@ -136,6 +136,6 @@ CTcpClient* CTcpClient::GetInstance()
 {
 	//static CTcpClient instance(env.ip, env.port);
 	//임시로 하드코딩
-	static CTcpClient instance("14.138.200.178", "55555");
+	static CTcpClient instance(env.ip, env.port);
 	return &instance;
 }
