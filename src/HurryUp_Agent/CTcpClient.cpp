@@ -104,10 +104,10 @@ int CTcpClient::Recv()
 				if (start_location == -1 || end_location == -1)
 					break;
 
-				ST_PACKET_INFO* stPacketRead = new ST_PACKET_INFO();
+				ST_NEW_PACKET_INFO* stPacketRead = new ST_NEW_PACKET_INFO();
 				core::ReadJsonFromString(stPacketRead, messageBuffers.substr(start_location + 8, end_location - (start_location + 8)));
 
-				//MessageManager()->PushReceiveMessage(stPacketRead);
+				MessageManager()->PushReceiveMessage(stPacketRead);
 				messageBuffers = messageBuffers.substr(start_location + 6);
 			}
 		}

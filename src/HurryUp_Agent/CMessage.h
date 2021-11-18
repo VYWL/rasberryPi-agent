@@ -6,8 +6,8 @@
 class CMessage
 {
 private:
-	std::queue<ST_PACKET_INFO*> receiveMessage;
-	std::queue<ST_PACKET_INFO*> sendMessage;
+	std::queue<ST_NEW_PACKET_INFO*> receiveMessage;
+	std::queue<ST_NEW_PACKET_INFO*> sendMessage;
 	std::mutex receiveMessageMutex;
 	std::mutex sendMessageMutex;
 
@@ -21,7 +21,7 @@ private:
 public:
 	static CMessage* GetInstance(void);
 	void Init();
-	void PushReceiveMessage(ST_PACKET_INFO* stPacketInfo);	//수신 메시지를 수신 메시지큐에 저장하는 기능
+	void PushReceiveMessage(ST_NEW_PACKET_INFO* stPacketInfo);	//수신 메시지를 수신 메시지큐에 저장하는 기능
 	void PushSendMessage(PacketType type, OPCODE opcode, std::tstring message);	//송신 메시지를 송신 메시지큐에 저장하는 기능
 };
 

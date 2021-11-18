@@ -25,7 +25,7 @@ void CMessage::Init()
 void CMessage::SendMessage()
 {
 	core::Log_Debug(TEXT("CMessage.cpp - [%s]"), TEXT("Working SendMessage In Thread"));
-	ST_PACKET_INFO* stPacketSend;
+	ST_NEW_PACKET_INFO* stPacketSend;
 
 	while (1) {
 		sleep(0);
@@ -60,11 +60,11 @@ void CMessage::PushSendMessage(PacketType type, OPCODE opcode, std::tstring mess
 {
 	sleep(0);
 	std::lock_guard<std::mutex> lock_guard(sendMessageMutex);
-	ST_PACKET_INFO* stPacketSend = new ST_PACKET_INFO(AGENT, SERVER, type, opcode, message);
+	ST_NEW_PACKET_INFO* stPacketSend = new ST_NEW_PACKET_INFO(opcode, message);
 	sendMessage.push(stPacketSend);
 }
 
-void CMessage::PushReceiveMessage(ST_PACKET_INFO* stPacketInfo)
+void CMessage::PushReceiveMessage(ST_NEW_PACKET_INFO* stPacketInfo)
 {
 	sleep(0);
 	std::lock_guard<std::mutex> lock_guard(receiveMessageMutex);
@@ -75,7 +75,7 @@ void CMessage::MatchReceiveMessage()
 {
 	core::Log_Debug(TEXT("CMessage.cpp : %s"), TEXT("Working MatchReceiveMessage In Thread"));
 	std::future<void> result;
-	ST_PACKET_INFO* stPacketRevc;
+	ST_NEW_PACKET_INFO* stPacketRevc;
 	while(1)
 	{
 		sleep(0);

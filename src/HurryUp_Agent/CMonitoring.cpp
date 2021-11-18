@@ -35,13 +35,11 @@ std::tstring CMonitoring::GetDirectoryPath(std::tstring logPath)
 
 std::tstring CMonitoring::GetFilename(std::tstring logPath)
 {
-	std::tstring fileName = core::ExtractFileName(logPath);
-
-	if (core::PathFileExistsA(fileName.c_str()))
-		return fileName;
+	if (core::PathFileExistsA(logPath.c_str()))
+		return core::ExtractFileName(logPath);
 	else
 	{
-		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("File Not Exists"), TEXT(fileName.c_str()));
+		core::Log_Warn(TEXT("CMonitoring.cpp - [%s] : %s"), TEXT("File Not Exists"), TEXT(logPath.c_str()));
 		return "";
 	}
 }

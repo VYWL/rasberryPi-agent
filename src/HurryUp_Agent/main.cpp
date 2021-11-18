@@ -71,11 +71,14 @@ int main(int argc, char *argv[]) {
 		std::cout << "isActive	:: " << it.isActive << '\n';
 	}*/
 
+	std::future<void> a = std::async(std::launch::async, &CMessage::Init, MessageManager());
+	std::future<void> b = std::async(std::launch::async, &CMonitoring::StartMonitoring, MonitoringManager());
+	//std::future<void> c = std::async(std::launch::async, &CMonitoring::StartMonitoring, MonitoringManager());
 
-	ClientManager()->Connect();
+	/*ClientManager()->Connect();
 
 	CCollectorManager()->startInterval();
-
+	MessageManager()->Init();*/
 	return 0;
 }
 
