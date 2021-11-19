@@ -396,15 +396,15 @@ struct ST_NEW_MONITOR_RESULT : public core::IFormatterObject
     }
 };
 
-struct ST_NEW_MONITOR_INFO : public core::IFormatterObject
+struct ST_NEW_LOG_INFO : public core::IFormatterObject
 {
     std::string processName;
     std::string logPath;
     std::string changeData;
 
-    ST_NEW_MONITOR_INFO(void)
+    ST_NEW_LOG_INFO(void)
     {}
-    ST_NEW_MONITOR_INFO(std::string _processName, std::string _logPath, std::string _changeData)
+    ST_NEW_LOG_INFO(std::string _processName, std::string _logPath, std::string _changeData)
         : processName(_processName), logPath(_logPath), changeData(_changeData)
     {}
 
@@ -414,6 +414,28 @@ struct ST_NEW_MONITOR_INFO : public core::IFormatterObject
             + core::sPair(TEXT("ProcessName"), processName)
             + core::sPair(TEXT("LogPath"), logPath)
             + core::sPair(TEXT("ChangeData"), changeData)
+            ;
+    }
+};
+
+struct ST_NEW_MONITOR_INFO : public core::IFormatterObject
+{
+    std::string environment;
+    std::string serialNumber;
+    ST_NEW_LOG_INFO logData;
+
+    ST_NEW_MONITOR_INFO(void)
+    {}
+    ST_NEW_MONITOR_INFO(std::string _environment, std::string _serialNumber, ST_NEW_LOG_INFO _logData)
+        : environment(_environment), serialNumber(_serialNumber), logData(_logData)
+    {}
+
+    void OnSync(core::IFormatter& formatter)
+    {
+        formatter
+            + core::sPair(TEXT("Environment"), environment)
+            + core::sPair(TEXT("SerialNumber"), serialNumber)
+            + core::sPair(TEXT("LogData"), logData)
             ;
     }
 };

@@ -375,19 +375,21 @@ std::vector<ST_NEW_FD_INFO> CMonitoring::GetFdLists(std::tstring pid)
 
 	while ((de = readdir(dir)) != NULL)
 	{
-		char buf[1024];
-		ST_NEW_FD_INFO pinfo;
-		std::tstring linkPath = TEXT(path) + TEXT("/") + TEXT(de->d_name);
+		if (strtol(de->d_name, NULL, 10) > 0) {
+			char buf[1024];
+			ST_NEW_FD_INFO pinfo;
+			std::tstring linkPath = TEXT(path) + TEXT("/") + TEXT(de->d_name);
 
-		int length = readlink(linkPath.c_str(), buf, sizeof(buf));
-		buf[length] = '\0';
+			int length = readlink(linkPath.c_str(), buf, sizeof(buf));
+			buf[length] = '\0';
 
-		pinfo.pid = strtol(pid.c_str(), NULL, 10);
-		pinfo.fdName = de->d_name;
-		pinfo.realPath = buf;
+			pinfo.pid = strtol(pid.c_str(), NULL, 10);
+			pinfo.fdName = de->d_name;
+			pinfo.realPath = buf;
 
-		fdLists.push_back(pinfo);
-		i++;
+			fdLists.push_back(pinfo);
+			i++;
+		}
 	}
 
 	core::Log_Debug(TEXT("CMonitoring.cpp - [%s] : %d"), TEXT("Get ProcessFileDescriptorList Start"), i);

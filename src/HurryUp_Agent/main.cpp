@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
 	env.port = argv[2];
 	env.loggerName = argv[3];
 	env.serialNumber = argv[4];
+	env.serialNumberIp = argv[5];
 
 	// :: PID TEST::
     // pid_t pid = GetPIDbyName("bash"); // If -1 = not found, if -2 = proc fs access error

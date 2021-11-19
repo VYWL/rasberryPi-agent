@@ -20,7 +20,7 @@ void func::GetProcessList()
 	MessageManager()->PushSendMessage(RESPONSE, PROCESS_LIST, jsProcessList);
 
 	for (auto pInfo : processList.metaInfo) {
-		//GetFileDescriptorList(std::to_string(pInfo.pid));
+		GetFileDescriptorList(std::to_string(pInfo.pid));
 		core::Log_Debug(TEXT("========================================"));
 		core::Log_Debug(TEXT("Function.cpp - [pid] : %d"), pInfo.pid);
 		core::Log_Debug(TEXT("Function.cpp - [ppid] : %d"), pInfo.ppid);
@@ -47,8 +47,8 @@ void func::GetFileDescriptorList(std::tstring pid)
 	MessageManager()->PushSendMessage(RESPONSE, FD_LIST, jsFdList);
 
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Get Process File Descriptor List Complete"));
-#ifdef DEBUG
-	for (auto fInfo : fdList.fdLists) {
+#ifdef _DEBUG
+	for (auto fInfo : fdList.metaInfo) {
 		core::Log_Debug(TEXT("========================================"));
 		core::Log_Debug(TEXT("Function.cpp - [pid] : %d"), fInfo.pid);
 		core::Log_Debug(TEXT("Function.cpp - [fdName] : %s"), TEXT(fInfo.fdName.c_str()));
@@ -111,9 +111,16 @@ void func::CollectMonitoringLog(std::tstring processName, std::tstring path, std
 
 	ST_NEW_MONITOR_INFO monitorInfo;
 
-	monitorInfo.processName = processName;
-	monitorInfo.logPath = path;
-	monitorInfo.changeData = data;
+	if (env.serialNumberIp == "") {
+		monitorInfo.serialNumber = env.serialNumber;
+		monitorInfo.environment = "Agent";
+	}
+	else {
+		monitorInfo.serialNumber = env.serialNumberIp;
+		monitorInfo.environment = "Non-Agent";
+	}
+
+	monitorInfo.logData = ST_NEW_LOG_INFO(processName, path, data);
 
 	std::tstring jsMonitorInfo;
 	core::WriteJsonToString(&monitorInfo, jsMonitorInfo);
@@ -139,6 +146,14 @@ void func::GetDeviceInfo()
 	std::tstring jsDeviceInfo;
 	core::WriteJsonToString(&deviceInfo, jsDeviceInfo);
 	
+	MessageManager()->PushSendMessage(RESPONSE, DEVICE, jsDeviceInfo);
+
+	deviceInfo.serialNumber = env.serialNumberIp;
+	deviceInfo.timestamp = getNowUnixTime();
+	deviceInfo.metaInfo = sendData;
+
+	core::WriteJsonToString(&deviceInfo, jsDeviceInfo);
+
 	MessageManager()->PushSendMessage(RESPONSE, DEVICE, jsDeviceInfo);
 
 	core::Log_Info(TEXT("Function.cpp - [%s]"), TEXT("Response Device Info Complete"));
