@@ -1,7 +1,7 @@
 #include "Function.h"
 #include "CMessage.h"
 #include "CMonitoring.h"
-#include "CDevice.h"
+//#include "CDevice.h"
 #include "CCollector.h"
 #include "utils.h"
 

@@ -25,6 +25,7 @@ std::vector<std::string> split(std::string input, char delimiter)
 
 std::string trim(const std::string& s)
 {
+	
 	if (s.length() == 0)
 		return s;
 

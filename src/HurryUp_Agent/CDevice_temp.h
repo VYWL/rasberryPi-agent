@@ -381,7 +381,13 @@ public:
 		}
 
 		std::string os_raw = exec("lsb_release -a | grep Description");
-		std::string os = trim(split(os_raw, ':')[1]);
+		std::string os;
+		std::cout << os_raw << std::endl;
+		auto os_split = split(os_raw, ':');
+		if (os_split.size() == 0)
+			os = "";
+		else
+			os = trim(split(os_raw, ':')[1]);
 		std::string release = buf.release;
 
 		_osInfo.osName		= os;

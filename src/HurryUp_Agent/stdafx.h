@@ -19,7 +19,7 @@
 #include <sstream>
 #include <regex>
 
-#include <pcap.h>
+//#include <pcap.h>
 #include <errno.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
